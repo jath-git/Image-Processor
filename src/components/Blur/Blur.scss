@@ -1,0 +1,30 @@
+#blur {
+    #arrow-container {
+        img {
+            width: 1.5vw;
+            cursor: pointer;
+        }
+        margin-left: 0.5vw;
+        float: left;
+    }
+
+    #title {
+        text-transform: uppercase;
+        font-size: 2rem;
+        vertical-align: middle;
+        height: 50px;
+        float: left;
+        margin-left: 1vw;
+    }
+
+    #modify {
+        margin-right: 0.5vw;
+        float: right;
+        width: 50%;
+
+        #blur-level {
+            width: 2vw;
+            float: right;
+        }
+    }
+}

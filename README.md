@@ -1,1 +1,1 @@
-# image--editor
+# image-editor
