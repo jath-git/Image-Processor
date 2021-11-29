@@ -1,7 +1,7 @@
 import './App.scss';
 // import { BLACK_COLOUR, WHITE_COLOUR, TYPES, TYPE_COUNT, WHITE_PIXEL, BLACK_PIXEL } from './Constants.js';
-import Canvas from './classes/Canvas';
-import Blur from './components/Blur/Blur'
+import CanvasList from './classes/CanvasList';
+// import Blur from './components/Blur/Blur'
 import { useState, useRef, useEffect } from 'react/cjs/react.development';
 
 function App() {
@@ -9,17 +9,17 @@ function App() {
   let [windowLoaded, setWindowLoaded] = useState(false);
   let canvas = useRef(null);
 
-  const image = new Image(1601, 664);
+  const image = new Image();  
   image.src = 'assets/images/landscape.jpg'
 
   useEffect(() => {
     if (!windowLoaded) {
       canvas.current.width = parseInt(image.width);
       canvas.current.height = parseInt(image.height);
-      setCanvasObj(new Canvas(image, canvas.current));
+      setCanvasObj(new CanvasList(image, canvas.current));
       setWindowLoaded(true);
     }
-  }, [image]);
+  }, [image, windowLoaded]);
 
   useEffect(() => {
     if (canvasObj) {
@@ -40,14 +40,13 @@ function App() {
       </div>
       <div id="menu">
         <button id="reset" onClick={() => {
-          console.log('res')
           canvasObj.reset();
           canvasObj.updateDisplay();
         }}>Reset</button>
         <button id="undo">Undo</button>
         {canvasObj ?
           <div id="options-container">
-            <div id="blur-container"><Blur canvasObj={canvasObj} /></div>
+            {/* <div id="blur-container"><Blur canvasObj={canvasObj} /></div> */}
           </div> : null}
       </div>
       <div id="canvas-container">

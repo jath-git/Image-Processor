@@ -83,6 +83,12 @@
     overflow: scroll;
     width: 78vw;
     top: 17vh;
+    height: 80vh;
+
+    &::-webkit-scrollbar {
+      display: none;
+      visibility: hidden;
+    }
   }
 
   #inputImage {
