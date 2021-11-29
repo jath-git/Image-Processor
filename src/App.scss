@@ -23,8 +23,9 @@
     button {
       width: 18vw;
       font-size: 1.75rem;
-      height: 10vh;
-      top: 2.5vh;
+      height: 8vh;
+      top: 3.5vh;
+      cursor: pointer;
     }
 
     #download {
@@ -44,7 +45,6 @@
     text-transform: uppercase;
     color: white;
     border: none;
-    cursor: pointer;
   }
 
   #menu {
@@ -60,14 +60,23 @@
       font-size: 1.2rem;
       height: 6vh;
       top: 2.5vh;
-      background-color: grey;
     }
 
-    #reset {
+    .active {
+      background-color: darkcyan;
+      cursor: pointer;
+    }
+
+    .inactive {
+      background-color: grey;
+      cursor: default;
+    }
+
+    .reset {
       left: 1vw;
     }
 
-    #undo {
+    .undo {
       left: 10.5vw;
     }
 

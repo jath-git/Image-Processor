@@ -5,17 +5,22 @@ export default class CanvasList {
     width;
     height;
     context;
+    originalContext;
     original;
     recent;
+    canUndo;
+    canReset;
 
     constructor(inputImage, canvas) {
         this.width = inputImage.width;
         this.height = inputImage.height;
         this.context = canvas.getContext('2d');
+        this.originalContext = canvas.getContext('2d');
         this.context.drawImage(inputImage, 0, 0);
         this.original = new Canvas(this.context, this.width, this.height);
         this.recent = this.original;
-        this.checkers(BLACK_PIXEL, 6);
+        this.canUndo = false;
+        this.canReset = false;
         this.updateDisplay();
     }
 
@@ -23,24 +28,31 @@ export default class CanvasList {
         this.recent.updateDisplay(this.context);
     }
 
-    makeNewRecent = () => {
-        const newRecent = new Canvas(this.context, this.width, this.height);
+    makeNewRecent = reference => {
+        const newRecent = new Canvas(this.context, this.width, this.height, reference);
+        return newRecent;
+    }
+
+    setNewRecent = newRecent => {
         newRecent.next = this.recent;
         this.recent = newRecent;
-        return newRecent;
+        this.canUndo = true;
+        this.canReset = true;
     }
 
     checkers = (pixel, skip) => {
         if (skip < 1) {
             return;
         }
-        const newRecent = this.makeNewRecent();
+        const newRecent = this.makeNewRecent(this.recent.pixels);
 
         for (let i = 0; i < this.height; i += skip) {
             for (let j = i % 2 || skip / 2 > this.width - 1 ? 0 : Math.floor(skip / 2); j < this.width; j += skip) {
                 newRecent.pixels[i * this.width + j] = pixel;
             }
         }
+
+        this.setNewRecent(newRecent);
     }
 
     lines = (pixel, intensity, skip, direction) => {
@@ -53,13 +65,13 @@ export default class CanvasList {
             return;
         }
 
-        const newRecent = this.makeNewRecent();
+        const newRecent = this.makeNewRecent(this.recent.pixels);
         let intensityCounter = intensity;
 
         if (simpleDirection === 'V' || simpleDirection === 'U' || simpleDirection === 'D') {
             for (let i = 0; i < this.width; i += intensityCounter === 0 ? skip : 1) {
                 for (let j = 0; j < this.height; ++j) {
-                    newRecent[j * this.width + i] = pixel;
+                    newRecent.pixels[j * this.width + i] = pixel;
                 }
 
                 intensityCounter === 0 ? intensityCounter = intensity : --intensityCounter;
@@ -67,16 +79,17 @@ export default class CanvasList {
         } else {
             for (let i = 0; i < this.height; i += intensityCounter === 0 ? skip : 1) {
                 for (let j = 0; j < this.width; ++j) {
-                    newRecent[i * this.width + j] = pixel;
+                    newRecent.pixels[i * this.width + j] = pixel;
                 }
 
                 intensityCounter === 0 ? intensityCounter = intensity : --intensityCounter;
             }
         }
+        this.setNewRecent(newRecent);
     }
 
     contrast = (makeBrighter, level) => {
-        const newRecent = this.makeNewRecent();
+        const newRecent = this.makeNewRecent(this.recent.pixels);
         let increment = -20;
         let limit = BLACK_COLOUR;
 
@@ -89,21 +102,27 @@ export default class CanvasList {
         for (let i = 0; i < pixelsLength; ++i) {
             for (let j = 0; j < TYPE_COUNT - 1; ++j) {
                 for (let k = 0; k < level; ++k) {
-                    const currColour = newRecent[i][TYPES[j]];
-                    newRecent[i][TYPES[j]] = currColour + increment > BLACK_COLOUR && currColour + increment < WHITE_COLOUR ? currColour + increment : limit;
+                    const currColour = newRecent.pixels[i][TYPES[j]];
+                    newRecent.pixels[i][TYPES[j]] = currColour + increment > BLACK_COLOUR && currColour + increment < WHITE_COLOUR ? currColour + increment : limit;
                 }
             }
         }
+        this.setNewRecent(newRecent);
     }
 
     invert = () => {
-        const newRecent = this.makeNewRecent();
-        const pixelsLength = newRecent.length;
+        const newRecent = this.makeNewRecent(this.recent.pixels);
+        const pixelsLength = this.height * this.width;
         for (let i = 0; i < pixelsLength; ++i) {
             for (let j = 0; j < TYPE_COUNT - 1; ++j) {
-                newRecent[i][TYPES[j]] = 255 - newRecent[i][TYPES[j]];
+                if (!newRecent.pixels[i]) {
+                    i = pixelsLength;
+                }
+                newRecent.pixels[i][TYPES[j]] = 255 - newRecent.pixels[i][TYPES[j]];
             }
         }
+        this.setNewRecent(newRecent);
+        this.updateDisplay();
     }
 
     flip = (direction) => {
@@ -116,24 +135,27 @@ export default class CanvasList {
             return;
         }
 
-        const newRecent = this.makeNewRecent();
+        const newRecent = this.makeNewRecent(this.recent.pixels);
         if (simpleDirection === 'H' || simpleDirection === 'X') {
             for (let i = 0; i < Math.floor(this.width / 2); ++i) {
                 for (let j = 0; j < this.height; ++j) {
-                    const tempPixel = newRecent[j * this.width + i];
-                    newRecent[j * this.width + i] = newRecent[j * this.width + this.width - 1 - i];
-                    newRecent[j * this.width + this.width - 1 - i] = tempPixel;
+                    const tempPixel = newRecent.pixels[j * this.width + i];
+                    newRecent.pixels[j * this.width + i] = newRecent.pixels[j * this.width + this.width - 1 - i];
+                    newRecent.pixels[j * this.width + this.width - 1 - i] = tempPixel;
                 }
             }
         } else {
             for (let i = 0; i < Math.floor(this.height / 2); ++i) {
                 for (let j = 0; j < this.width; ++j) {
-                    const tempPixel = newRecent[i * this.width + j];
-                    newRecent[i * this.width + j] = newRecent[(this.height - 1 - i) * this.width + j];
-                    newRecent[(this.height - 1 - i) * this.width + j] = tempPixel;
+                    const tempPixel = newRecent.pixels[i * this.width + j];
+                    newRecent.pixels[i * this.width + j] = newRecent.pixels[(this.height - 1 - i) * this.width + j];
+                    newRecent.pixels[(this.height - 1 - i) * this.width + j] = tempPixel;
                 }
             }
         }
+        this.setNewRecent(newRecent);
+
+        this.updateDisplay();
     }
 
     cropTopLeft = () => {
@@ -142,16 +164,16 @@ export default class CanvasList {
         const remainingWidth = this.width % widthMidpoint;
         const remainingHeight = this.height % heightMidpoint;
 
-        const newRecent = this.makeNewRecent();
+        const newRecent = this.makeNewRecent(this.recent.pixels);
         for (let i = heightMidpoint - 1; i >= 0; --i) {
             for (let j = widthMidpoint - 1; j >= 0; --j) {
-                const currPixel = newRecent[i * this.width + j];
+                const currPixel = newRecent.pixels[i * this.width + j];
                 const mapX = this.width - 1 - 2 * (widthMidpoint - 1 - j);
                 const mapY = this.height - 1 - 2 * (heightMidpoint - 1 - i);
 
                 for (let k = 0; k < 2; ++k) {
                     for (let l = 0; l < 2; ++l) {
-                        newRecent[(mapY - k) * this.width + mapX - l] = currPixel;
+                        newRecent.pixels[(mapY - k) * this.width + mapX - l] = currPixel;
                     }
                 }
             }
@@ -164,6 +186,7 @@ export default class CanvasList {
         if (remainingHeight !== 0) {
             this.cleanBorders(remainingHeight, 'T', WHITE_PIXEL);
         }
+        this.setNewRecent(newRecent);
     }
 
     crop = (splitX, splitY, sectionX, sectionY) => {
@@ -176,7 +199,7 @@ export default class CanvasList {
             return;
         }
 
-        const newRecent = this.makeNewRecent();
+        const newRecent = this.makeNewRecent(this.recent.pixels);
         const widthMidpoint = Math.floor(this.width / splitX);
         const heightMidpoint = Math.floor(this.height / splitY);
         const remainingWidth = this.width % splitX;
@@ -185,7 +208,7 @@ export default class CanvasList {
         let sectionPixels = [];
         for (let i = sectionY * heightMidpoint; i < (sectionY + 1) * heightMidpoint; ++i) {
             for (let j = sectionX * widthMidpoint; j < (sectionX + 1) * widthMidpoint; ++j) {
-                sectionPixels.push(newRecent[i * this.width + j]);
+                sectionPixels.push(newRecent.pixels[i * this.width + j]);
             }
         }
 
@@ -195,7 +218,7 @@ export default class CanvasList {
 
                 for (let k = 0; k < splitY; ++k) {
                     for (let l = 0; l < splitX; ++l) {
-                        newRecent[(k + i * splitY) * this.width + l + j * splitX] = currPixel;
+                        newRecent.pixels[(k + i * splitY) * this.width + l + j * splitX] = currPixel;
                     }
                 }
             }
@@ -208,6 +231,7 @@ export default class CanvasList {
         if (remainingHeight !== 0) {
             this.cleanBorders(remainingHeight, 'B', WHITE_PIXEL);
         }
+        this.setNewRecent(newRecent);
     }
 
 
@@ -216,7 +240,7 @@ export default class CanvasList {
             return;
         }
 
-        const newRecent = this.makeNewRecent();
+        const newRecent = this.makeNewRecent(this.recent.pixels);
         const widthMidpoint = Math.floor(this.width / splitX);
         const heightMidpoint = Math.floor(this.height / splitY);
         const remainingWidth = this.width % splitX;
@@ -224,12 +248,12 @@ export default class CanvasList {
 
         for (let i = 0; i < heightMidpoint; ++i) {
             for (let j = 0; j < widthMidpoint; ++j) {
-                const currPixel = newRecent[(i + sectionY * heightMidpoint) * this.width + j + sectionX * widthMidpoint];
+                const currPixel = newRecent.pixels[(i + sectionY * heightMidpoint) * this.width + j + sectionX * widthMidpoint];
 
                 for (let k = 0; k < this.height - remainingHeight; k += heightMidpoint) {
                     for (let l = 0; l < this.width - remainingWidth; l += widthMidpoint) {
                         if (k !== sectionY * heightMidpoint || l !== sectionX * widthMidpoint) {
-                            newRecent[(i + k) * this.width + j + l] = currPixel;
+                            newRecent.pixels[(i + k) * this.width + j + l] = currPixel;
                         }
                     }
                 }
@@ -243,6 +267,7 @@ export default class CanvasList {
         if (remainingHeight !== 0) {
             this.cleanBorders(remainingHeight, 'B', WHITE_PIXEL);
         }
+        this.setNewRecent(newRecent);
     }
 
     addBorders = (length, pixel, borders) => {
@@ -288,36 +313,37 @@ export default class CanvasList {
             return;
         }
 
-        const newRecent = this.makeNewRecent();
+        const newRecent = this.makeNewRecent(this.recent.pixels);
         switch (simpleDirection) {
             case 'T':
                 for (let i = 0; i < remaining; ++i) {
                     for (let j = 0; j < this.width; ++j) {
-                        newRecent[i * this.width + j] = pixel;
+                        newRecent.pixels[i * this.width + j] = pixel;
                     }
                 }
                 break;
             case 'B':
                 for (let i = this.height - remaining; i < this.height; ++i) {
                     for (let j = 0; j < this.width; ++j) {
-                        newRecent[i * this.width + j] = pixel;
+                        newRecent.pixels[i * this.width + j] = pixel;
                     }
                 }
                 break;
             case 'L':
                 for (let i = 0; i < this.height; ++i) {
                     for (let j = 0; j < remaining; ++j) {
-                        newRecent[i * this.width + j] = pixel;
+                        newRecent.pixels[i * this.width + j] = pixel;
                     }
                 }
                 break;
             default:
                 for (let i = 0; i < this.height; ++i) {
                     for (let j = this.width - remaining; j < this.width; ++j) {
-                        newRecent[i * this.width + j] = pixel;
+                        newRecent.pixels[i * this.width + j] = pixel;
                     }
                 }
         }
+        this.setNewRecent(newRecent);
     }
 
     mirror = direction => {
@@ -326,36 +352,37 @@ export default class CanvasList {
             return;
         }
 
-        const newRecent = this.makeNewRecent();
+        const newRecent = this.makeNewRecent(this.recent.pixels);
         switch (simpleDirection) {
             case 'T':
                 for (let i = 0; i < Math.floor(this.height / 2); ++i) {
                     for (let j = 0; j < this.width; ++j) {
-                        newRecent[(this.height - 1 - i) * this.width + j] = newRecent[i * this.width + j];
+                        newRecent.pixels[(this.height - 1 - i) * this.width + j] = newRecent.pixels[i * this.width + j];
                     }
                 }
                 break;
             case 'B':
                 for (let i = 0; i < Math.floor(this.height / 2); ++i) {
                     for (let j = 0; j < this.width; ++j) {
-                        newRecent[i * this.width + j] = newRecent[(this.height - 1 - i) * this.width + j];
+                        newRecent.pixels[i * this.width + j] = newRecent.pixels[(this.height - 1 - i) * this.width + j];
                     }
                 }
                 break;
             case 'L':
                 for (let i = 0; i < Math.floor(this.width / 2); ++i) {
                     for (let j = 0; j < this.height; ++j) {
-                        newRecent[j * this.width + this.width - 1 - i] = newRecent[j * this.width + i];
+                        newRecent.pixels[j * this.width + this.width - 1 - i] = newRecent.pixels[j * this.width + i];
                     }
                 }
                 break;
             default:
                 for (let i = 0; i < Math.floor(this.width / 2); ++i) {
                     for (let j = 0; j < this.height; ++j) {
-                        newRecent[j * this.width + i] = newRecent[j * this.width + this.width - 1 - i];
+                        newRecent.pixels[j * this.width + i] = newRecent.pixels[j * this.width + this.width - 1 - i];
                     }
                 }
         }
+        this.setNewRecent(newRecent);
     }
 
     blur = (levelX, levelY) => {
@@ -363,7 +390,7 @@ export default class CanvasList {
             return;
         }
 
-        const newRecent = this.makeNewRecent();
+        const newRecent = this.makeNewRecent(this.recent.pixels);
         for (let i = 0; i < this.height; i += levelY) {
             for (let j = 0; j < this.width; j += levelX) {
                 let sum = {
@@ -378,7 +405,7 @@ export default class CanvasList {
                         if (k >= 0 && k < this.height && l >= 0 && l < this.width) {
                             ++count;
                             for (let m = 0; m < TYPE_COUNT - 1; ++m) {
-                                sum[TYPES[m]] += newRecent[k * this.width + l][TYPES[m]];
+                                sum[TYPES[m]] += newRecent.pixels[k * this.width + l][TYPES[m]];
                             }
                         }
                     }
@@ -394,15 +421,35 @@ export default class CanvasList {
                 for (let k = i; k < i + levelY; ++k) {
                     for (let l = j; l < j + levelX; ++l) {
                         if (k >= 0 && k < this.height && l >= 0 && l < this.width) {
-                            newRecent[k * this.width + l] = average;
+                            newRecent.pixels[k * this.width + l] = average;
                         }
                     }
                 }
             }
         }
+
+        this.setNewRecent(newRecent);
     }
 
     reset = () => {
-        this.recent = this.original;
+        if (this.canReset) {
+            const newRecent = this.makeNewRecent(this.original.pixels);
+            newRecent.next = this.recent;
+            this.recent = newRecent;
+            this.canReset = false;
+            this.updateDisplay();
+        }
+    }
+
+    undo = () => {
+        if (this.canUndo) {
+            this.recent = this.recent.next;
+            this.canUndo = this.recent.next !== null;
+
+            if (!this.canUndo) {
+                this.canReset = false;
+            }
+            this.updateDisplay();
+        }
     }
 }

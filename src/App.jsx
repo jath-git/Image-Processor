@@ -7,9 +7,11 @@ import { useState, useRef, useEffect } from 'react/cjs/react.development';
 function App() {
   let [canvasObj, setCanvasObj] = useState(null);
   let [windowLoaded, setWindowLoaded] = useState(false);
+  let [canUndo, setCanUndo] = useState(false);
+  let [canReset, setCanReset] = useState(false);
   let canvas = useRef(null);
 
-  const image = new Image();  
+  const image = new Image();
   image.src = 'assets/images/landscape.jpg'
 
   useEffect(() => {
@@ -23,9 +25,10 @@ function App() {
 
   useEffect(() => {
     if (canvasObj) {
-      canvasObj.updateDisplay();
+      setCanUndo(canvasObj.canUndo);
+      setCanReset(canvasObj.canReset);
     }
-  }, [canvasObj]);
+  });
 
   return (
     <div id="app">
@@ -39,14 +42,51 @@ function App() {
         }}>Download</button>
       </div>
       <div id="menu">
-        <button id="reset" onClick={() => {
+        <button className={canReset ? 'reset active' : 'reset inactive'} onClick={() => {
           canvasObj.reset();
-          canvasObj.updateDisplay();
-        }}>Reset</button>
-        <button id="undo">Undo</button>
+          setCanReset(canvasObj.canReset);
+
+        }
+        }>Reset</button>
+        <button className={canUndo ? 'undo active' : 'undo inactive'} onClick={() => {
+          canvasObj.undo();
+          setCanUndo(canvasObj.canUndo);
+          setCanReset(canvasObj.canReset);
+        }
+        }>Undo</button>
         {canvasObj ?
           <div id="options-container">
-            {/* <div id="blur-container"><Blur canvasObj={canvasObj} /></div> */}
+            <div className="option">
+              <div className="title">
+                Brightness
+              </div>
+              <input type="range" min="-10" max="10" />
+            </div>
+            <div className="option">
+              <div className="title">
+                Invert
+              </div>
+              <input type="checkbox" onChange={() => {
+                canvasObj.invert();
+                setCanUndo(canvasObj.canUndo);
+                setCanReset(canvasObj.canReset);
+              }} />
+            </div>
+            <div className="option">
+              <div className="title">
+                Flip
+              </div>
+              <input type="checkbox" onChange={() => {
+                canvasObj.flip('H');
+                setCanUndo(canvasObj.canUndo);
+                setCanReset(canvasObj.canReset);
+              }} />
+              <input type="checkbox" onChange={() => {
+                canvasObj.flip('V');
+                setCanUndo(canvasObj.canUndo);
+                setCanReset(canvasObj.canReset);
+              }}/>
+            </div>
           </div> : null}
       </div>
       <div id="canvas-container">
