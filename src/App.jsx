@@ -23,7 +23,7 @@ function App() {
   let [cropChanged, setCropChanged] = useState(true);
   let [duplicateChanged, setDuplicateChanged] = useState(true);
   let [brightnessLevel, setBrightnessLevel] = useState(0);
-  let [consistentUpdate, setConsistentUpdate] = useState(false);
+  let [consistentUpdate, setConsistentUpdate] = useState(true);
   let [tBorderChecked, setTBorderChecked] = useState(false);
   let [bBorderChecked, setBBorderChecked] = useState(false);
   let [lBorderChecked, setLBorderChecked] = useState(false);
