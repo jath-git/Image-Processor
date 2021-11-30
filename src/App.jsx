@@ -1,6 +1,6 @@
 import './App.scss';
 import CanvasList from './classes/CanvasList';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { BLACK_PIXEL } from './Constants';
 import { setPreviousInput, getValidNumber, makeInteger, makeWholeNumber, makeNaturalNumber } from './utilities/default';
 
@@ -44,7 +44,7 @@ function App() {
   let lMirror = useRef(null);
   let rMirror = useRef(null);
 
-  const image = new Image();
+  const image = useMemo(() => new Image(), []);
   image.src = 'assets/images/landscape.jpg';
   image.onload = () => {
     imageLoaded.current = true;
@@ -57,7 +57,7 @@ function App() {
       setCanvasObj(new CanvasList(image, canvas.current));
       imageLoaded.current = false;
     }
-  }, [imageLoaded.current]);
+  }, [image]);
 
   const updateAbilities = () => {
     if (consistentUpdate) {
