@@ -1,21 +1,17 @@
 import './App.scss';
-// import { BLACK_COLOUR, WHITE_COLOUR, TYPES, TYPE_COUNT, WHITE_PIXEL, BLACK_PIXEL } from './Constants.js';
 import CanvasList from './classes/CanvasList';
-// import Blur from './components/Blur/Blur'
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { BLACK_PIXEL } from './Constants';
 import { setPreviousInput, getValidNumber, makeInteger, makeWholeNumber, makeNaturalNumber } from './utilities/default';
-// import { RED_PIXEL } from './Constants';
 
 function App() {
+  let imageLoaded = useRef();
   let [canvasObj, setCanvasObj] = useState(null);
-  let [imageLoaded, setImageLoaded] = useState(false);
   let [canUndo, setCanUndo] = useState(false);
   let [canReset, setCanReset] = useState(false);
   let [invertChecked, setInvertChecked] = useState(false);
   let [hFlipChecked, setHFlipChecked] = useState(false);
   let [vFlipChecked, setVFlipChecked] = useState(false);
-  let [imageIndex] = useState(0);
   let [commandPressed, setCommandPressed] = useState(false);
   let [controlPressed, setControlPressed] = useState(false);
   let [brightnessChanged, setBrightnessChanged] = useState(true);
@@ -29,10 +25,7 @@ function App() {
   let [lBorderChecked, setLBorderChecked] = useState(false);
   let [rBorderChecked, setRBorderChecked] = useState(false);
   let [grayScaled, setGrayScaled] = useState(false);
-  // let [tMirrorChecked, setTMirrorChecked] = useState(false);
-  // let [bMirrorChecked, setBMirrorChecked] = useState(false);
-  // let [lMirrorChecked, setLMirrorChecked] = useState(false);
-  // let [rMirrorChecked, setRMirrorChecked] = useState(false);
+
   let borderLength = useRef(null);
   let checkersSpacing = useRef(null);
   let canvas = useRef(null);
@@ -51,18 +44,20 @@ function App() {
   let lMirror = useRef(null);
   let rMirror = useRef(null);
 
-  const images = useMemo(() => [], []);
-  images[imageIndex] = new Image();
-  images[imageIndex].src = 'assets/images/landscape.jpg'
+  const image = new Image();
+  image.src = 'assets/images/landscape.jpg';
+  image.onload = () => {
+    imageLoaded.current = true;
+  }
 
   useEffect(() => {
-    if (!imageLoaded && images) {
-      canvas.current.width = parseInt(images[imageIndex].width);
-      canvas.current.height = parseInt(images[imageIndex].height);
-      setCanvasObj(new CanvasList(images[imageIndex], canvas.current));
-      setImageLoaded(true);
+    if (imageLoaded.current && image && canvas.current) {
+      canvas.current.width = parseInt(image.width);
+      canvas.current.height = parseInt(image.height);
+      setCanvasObj(new CanvasList(image, canvas.current));
+      imageLoaded.current = false;
     }
-  }, [images, imageLoaded, imageIndex]);
+  }, [imageLoaded.current]);
 
   const updateAbilities = () => {
     if (consistentUpdate) {
