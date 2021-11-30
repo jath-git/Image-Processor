@@ -5,7 +5,7 @@ import { BLACK_PIXEL } from './Constants';
 import { setPreviousInput, getValidNumber, makeInteger, makeWholeNumber, makeNaturalNumber } from './utilities/default';
 
 function App() {
-  let imageLoaded = useRef();
+  let imageLoaded = useRef(false);
   let [canvasObj, setCanvasObj] = useState(null);
   let [canUndo, setCanUndo] = useState(false);
   let [canReset, setCanReset] = useState(false);
@@ -46,18 +46,29 @@ function App() {
 
   const image = useMemo(() => new Image(), []);
   image.src = 'assets/images/landscape.jpg';
-  image.onload = () => {
-    imageLoaded.current = true;
-  }
+  // image.onload = () => {
+  //   imageLoaded.current = true;
+  // }
 
   useEffect(() => {
-    if (imageLoaded.current && image && canvas.current) {
-      canvas.current.width = parseInt(image.width);
-      canvas.current.height = parseInt(image.height);
-      setCanvasObj(new CanvasList(image, canvas.current));
-      imageLoaded.current = false;
+    if (!imageLoaded.current) {
+      imageLoaded.current = true;
+      setTimeout(() => {
+        canvas.current.width = parseInt(image.width);
+        canvas.current.height = parseInt(image.height);
+        setCanvasObj(new CanvasList(image, canvas.current));
+      }, 1000);
     }
-  }, [image]);
+  });
+
+  // useEffect(() => {
+  //   if (imageLoaded.current && image && canvas.current) {
+  //     canvas.current.width = parseInt(image.width);
+  //     canvas.current.height = parseInt(image.height);
+  //     setCanvasObj(new CanvasList(image, canvas.current));
+  //     imageLoaded.current = false;
+  //   }
+  // }, [image]);
 
   const updateAbilities = () => {
     if (consistentUpdate) {
