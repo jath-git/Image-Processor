@@ -28,12 +28,12 @@
       cursor: pointer;
     }
 
-    #download {
+    #update {
       background-color: #26abff;
       right: 2vw;
     }
 
-    #editOther {
+    #download {
       background-color: #8b0000;
       right: 21vw;
     }
@@ -41,8 +41,8 @@
 
   button {
     position: absolute;
-    border-radius: 7.5px;
     text-transform: uppercase;
+    border-radius: 50px;
     color: white;
     border: none;
   }
@@ -55,11 +55,15 @@
     height: 100vh;
     width: 20vw;
 
-    button {
-      width: 8vw;
-      font-size: 1.2rem;
-      height: 6vh;
+    .submit {
+      cursor: pointer;
+    }
+
+    .reset, .undo {
       top: 2.5vh;
+      font-size: 1rem;
+      padding: 1.5vh 1vw;
+      width: 8vw;
     }
 
     .active {
@@ -68,7 +72,6 @@
     }
 
     .inactive {
-      background-color: grey;
       cursor: default;
     }
 
@@ -83,6 +86,12 @@
     #options-container {
       width: 100%;
       margin-top: 11vh;
+
+      .blur-add {
+        width: 1vw;
+        height: 2.75vh;
+        cursor: pointer;
+      }
     }
   }
 
