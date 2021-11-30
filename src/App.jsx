@@ -2,7 +2,7 @@ import './App.scss';
 // import { BLACK_COLOUR, WHITE_COLOUR, TYPES, TYPE_COUNT, WHITE_PIXEL, BLACK_PIXEL } from './Constants.js';
 import CanvasList from './classes/CanvasList';
 // import Blur from './components/Blur/Blur'
-import { useState, useRef, useEffect, useMemo } from 'react/cjs/react.development';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { BLACK_PIXEL } from './Constants';
 import { setPreviousInput, getValidNumber, makeInteger, makeWholeNumber, makeNaturalNumber } from './utilities/default';
 // import { RED_PIXEL } from './Constants';
