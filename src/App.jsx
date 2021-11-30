@@ -56,7 +56,7 @@ function App() {
   images[imageIndex].src = 'assets/images/landscape.jpg'
 
   useEffect(() => {
-    if (!imageLoaded) {
+    if (!imageLoaded && images) {
       canvas.current.width = parseInt(images[imageIndex].width);
       canvas.current.height = parseInt(images[imageIndex].height);
       setCanvasObj(new CanvasList(images[imageIndex], canvas.current));
