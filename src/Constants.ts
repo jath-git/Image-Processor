@@ -1,50 +1,52 @@
-const BLACK_COLOUR = 0;
-const WHITE_COLOUR = 255;
-const TYPES = ['red', 'green', 'blue', 'alpha'];
-const TYPE_COUNT = 4;
-const WHITE_PIXEL = {
+import pixel from './interfaces/pixel';
+
+const BLACK_COLOUR: number = 0;
+const WHITE_COLOUR: number = 255;
+const TYPES: string[] = ['red', 'green', 'blue', 'alpha'];
+const TYPE_COUNT: number = 4;
+const WHITE_PIXEL: pixel = {
     red: WHITE_COLOUR,
     green: WHITE_COLOUR,
     blue: WHITE_COLOUR,
     alpha: WHITE_COLOUR
 }
-const BLACK_PIXEL = {
+const BLACK_PIXEL: pixel = {
     red: BLACK_COLOUR,
     green: BLACK_COLOUR,
     blue: BLACK_COLOUR,
     alpha: WHITE_COLOUR
 }
-const RED_PIXEL = {
+const RED_PIXEL: pixel = {
     red: WHITE_COLOUR,
     green: BLACK_COLOUR,
     blue: BLACK_COLOUR,
     alpha: WHITE_COLOUR
 }
-const BLUE_PIXEL = {
+const BLUE_PIXEL: pixel = {
     red: BLACK_COLOUR,
     green: BLACK_COLOUR,
     blue: WHITE_COLOUR,
     alpha: WHITE_COLOUR
 }
-const GREEN_PIXEL = {
+const GREEN_PIXEL: pixel = {
     red: BLACK_COLOUR,
     green: WHITE_COLOUR,
     blue: BLACK_COLOUR,
     alpha: WHITE_COLOUR
 }
-const ORANGE_PIXEL = {
+const ORANGE_PIXEL: pixel = {
     red: WHITE_COLOUR,
     green: WHITE_COLOUR * 11 / 17,
     blue: BLACK_COLOUR,
     alpha: WHITE_COLOUR
 }
-const PURPLE_PIXEL = {
+const PURPLE_PIXEL: pixel = {
     red: WHITE_COLOUR / 2,
     green: BLACK_COLOUR,
     blue: WHITE_COLOUR / 2,
     alpha: WHITE_COLOUR
 }
-const YELLOW_PIXEL = {
+const YELLOW_PIXEL: pixel = {
     red: WHITE_COLOUR,
     green: WHITE_COLOUR,
     blue: BLACK_COLOUR,

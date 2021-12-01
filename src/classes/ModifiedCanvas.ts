@@ -1,26 +1,28 @@
-import { WHITE_COLOUR } from '../Constants.js';
+import { WHITE_COLOUR } from '../Constants';
+import properties from '../interfaces/properties';
+import pixel from '../interfaces/pixel';
 import Canvas from './Canvas';
 
 export default class ModifiedCanvas extends Canvas {
-    constructor(_context, _width, _height, _reference) {
+    constructor(_context: CanvasRenderingContext2D, _width: number, _height: number, _reference: Canvas) {
         super(_context, _width, _height);
         this.copyProperties(_reference.properties);
         this.pixels = this.parseReferenceToPixels(_reference.pixels);
     }
 
-    copyProperties = prevProperties => {
+    copyProperties = (prevProperties: properties): void => {
         this.properties = this.recurseProperties(prevProperties);
     }
 
-    recurseProperties = obj => {
-        let retval = {};
+    recurseProperties = (obj: any): any => {
+        let retval: any = {};
         for (let i in obj) {
-            typeof (obj[i]) === 'object' ? retval[i] = this.recurseProperties(obj[i]) : retval[i] = obj[i];
+            retval[i] = typeof (obj[i]) === 'object' ? this.recurseProperties(obj[i]) : obj[i];
         }
         return retval;
     }
 
-    parseReferenceToPixels = prevPixels => {
+    parseReferenceToPixels = (prevPixels: pixel[]) => {
         const prevPixelsLength = prevPixels.length;
         let tempPixels = [];
 

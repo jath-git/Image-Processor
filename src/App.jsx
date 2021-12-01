@@ -56,7 +56,6 @@ function App() {
   let rMirror = useRef(null);
   let colour = useRef(null);
 
-
   const image = useMemo(() => new Image(), []);
   image.src = 'assets/images/landscape.jpg';
   useEffect(() => {
@@ -83,7 +82,6 @@ function App() {
     const properties = canvasObj.recent.properties;
     brightness.current.value = properties.brightnessLevel;
     borderLength.current.value = properties.borderLength;
-    console.log(properties.checkersSpacing)
     checkersSpacing.current.value = properties.checkersSpacing;
     cropSplitX.current.value = properties.cropped.splitX;
     cropSplitY.current.value = properties.cropped.splitY;
@@ -580,7 +578,6 @@ function App() {
                 const value = e.target.value;
                 e.target.value = makeNaturalNumber(value);
 
-                // console.log(canvasObj.recent.properties.checkersSpacing)
                 setCheckersChanged(e.target.value === '' || parseInt(e.target.value) === canvasObj.recent.properties.checkersSpacing);
               }} />
               <button className={checkersChanged ? "submit checkers inactive" : "submit checkers active"} onClick={() => {
