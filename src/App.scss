@@ -9,32 +9,35 @@
     width: 80vw;
     height: 15vh;
 
-    #importedImage {
-      position: absolute;
-      border-radius: 5px;
-      width: 35vw;
+    .input {
+      font-size: 1vw;
+      border-radius: 50px;
+      margin-left: 2vw;
       height: 5vh;
-      left: 2vw;
-      top: 5vh;
-      background-color: white;
-      font-size: 1rem;
+      color: white;
+      width: 36vw;
+      padding: 1%;
+    }
+
+    .input,
+    button {
+      background-color: #26abff;
+      cursor: pointer;
+      margin-top: 3.5vh;
+      border: solid white 1px;
     }
 
     button {
       width: 18vw;
-      font-size: 1.75rem;
+      font-size: 1.65vw;
       height: 8vh;
-      top: 3.5vh;
-      cursor: pointer;
     }
 
     .update {
-      background-color: #8b0000;
       right: 21vw;
     }
 
     .download {
-      background-color: #26abff;
       right: 2vw;
     }
   }
@@ -44,7 +47,7 @@
     text-transform: uppercase;
     border-radius: 50px;
     color: white;
-    border: none;
+    border: solid 1px white;
   }
 
   #menu {
@@ -59,7 +62,8 @@
       cursor: pointer;
     }
 
-    .reset, .undo {
+    .reset,
+    .undo {
       top: 2.5vh;
       font-size: 1rem;
       padding: 1.5vh 1vw;

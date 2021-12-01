@@ -5,8 +5,12 @@ import { BLACK_PIXEL, RED_PIXEL, WHITE_PIXEL, BLUE_PIXEL, GREEN_PIXEL, YELLOW_PI
 import { setPreviousInput, getValidNumber, makeInteger, makeWholeNumber, makeNaturalNumber } from './utilities/default';
 
 function App() {
+  let canvas = useRef(null);
   let imageLoaded = useRef(false);
+  let inputFile = useRef(false);
   let [canvasObj, setCanvasObj] = useState(null);
+
+  const timeDuration = 1000;
   let [canUndo, setCanUndo] = useState(false);
   let [canReset, setCanReset] = useState(false);
   let [invertChecked, setInvertChecked] = useState(false);
@@ -36,7 +40,6 @@ function App() {
   let [whiteChecked, setWhiteChecked] = useState(false);
   let borderLength = useRef(null);
   let checkersSpacing = useRef(null);
-  let canvas = useRef(null);
   let brightness = useRef(null);
   let cropSplitX = useRef(null);
   let cropSplitY = useRef(null);
@@ -54,7 +57,6 @@ function App() {
 
   const image = useMemo(() => new Image(), []);
   image.src = 'assets/images/landscape.jpg';
-
   useEffect(() => {
     if (!imageLoaded.current) {
       imageLoaded.current = true;
@@ -62,7 +64,7 @@ function App() {
         canvas.current.width = parseInt(image.width);
         canvas.current.height = parseInt(image.height);
         setCanvasObj(new CanvasList(image, canvas.current));
-      }, 1000);
+      }, timeDuration);
     }
   });
 
@@ -163,7 +165,7 @@ function App() {
     }
   }
 
-  const changeMirror = (border, setTrue) => {
+  const changeMirror = (border) => {
     canvasObj.mirror(border);
     updateAbilities();
   }
@@ -343,6 +345,26 @@ function App() {
   return (
     <div id="app">
       <div id="header">
+        <input className="input" type="file" ref={inputFile} onChange={() => {
+          console.log(this)
+          const image = new Image();
+
+          const reader = new FileReader();
+          const file = inputFile.current.files[0];
+
+          reader.addEventListener('load', () => {
+            if (file['type'].split('/')[0] === 'image')
+              image.src = reader.result;
+          })
+          reader.readAsDataURL(file);
+          setTimeout(() => {
+            canvas.current.width = parseInt(image.width);
+            canvas.current.height = parseInt(image.height);
+            reset();
+            setCanUndo(false);
+            setCanvasObj(new CanvasList(image, canvas.current));
+          }, timeDuration);
+        }} />
         <button className={consistentUpdate ? "none" : "update"} onClick={() => {
           canvasObj.updateDisplay();
         }}>Update

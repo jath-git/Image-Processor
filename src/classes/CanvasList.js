@@ -7,12 +7,12 @@ export default class CanvasList {
         this.width = inputImage.width;
         this.height = inputImage.height;
         this.context = canvas.getContext('2d');
-        this.originalContext = canvas.getContext('2d');
         this.context.drawImage(inputImage, 0, 0);
         this.original = new OriginalCanvas(this.context, this.width, this.height);
         this.recent = this.original;
         this.canUndo = false;
         this.canReset = false;
+        this.image = inputImage;
         this.updateDisplay();
     }
 
