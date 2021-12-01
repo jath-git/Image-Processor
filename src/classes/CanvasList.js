@@ -50,7 +50,7 @@ export default class CanvasList {
             return;
         }
         const newRecent = this.makeNewRecent(this.recent);
-        newRecent.properties.checkersSpace = skip;
+        newRecent.properties.checkersSpacing = skip;
         newRecent.properties.pixel = pixel;
 
         for (let i = 0; i < this.height; i += skip) {

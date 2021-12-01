@@ -1,8 +1,8 @@
 import './App.scss';
 import CanvasList from './classes/CanvasList';
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { BLACK_PIXEL, RED_PIXEL, WHITE_PIXEL, BLUE_PIXEL, GREEN_PIXEL, YELLOW_PIXEL, PURPLE_PIXEL, ORANGE_PIXEL } from './Constants';
-import { setPreviousInput, getValidNumber, makeInteger, makeWholeNumber, makeNaturalNumber } from './utilities/default';
+import { BLACK_PIXEL, RED_PIXEL, WHITE_PIXEL, BLUE_PIXEL, GREEN_PIXEL, YELLOW_PIXEL, PURPLE_PIXEL, ORANGE_PIXEL, TYPE_COUNT, TYPES } from './Constants';
+import { setPreviousInput, getValidNumber, makeInteger, makeWholeNumber, makeNaturalNumber, getColour } from './utilities/default';
 
 function App() {
   let canvas = useRef(null);
@@ -54,6 +54,8 @@ function App() {
   let bMirror = useRef(null);
   let lMirror = useRef(null);
   let rMirror = useRef(null);
+  let colour = useRef(null);
+
 
   const image = useMemo(() => new Image(), []);
   image.src = 'assets/images/landscape.jpg';
@@ -81,6 +83,7 @@ function App() {
     const properties = canvasObj.recent.properties;
     brightness.current.value = properties.brightnessLevel;
     borderLength.current.value = properties.borderLength;
+    console.log(properties.checkersSpacing)
     checkersSpacing.current.value = properties.checkersSpacing;
     cropSplitX.current.value = properties.cropped.splitX;
     cropSplitY.current.value = properties.cropped.splitY;
@@ -96,6 +99,8 @@ function App() {
     lMirror.current.checked = properties.mirror.L;
     rMirror.current.checked = properties.mirror.R;
 
+    colour.current.style.backgroundColor = getColour(properties.pixel);
+
     setInvertChecked(properties.isInverted);
     setHFlipChecked(properties.isFlipped.horizontal);
     setVFlipChecked(properties.isFlipped.vertical);
@@ -105,14 +110,32 @@ function App() {
     setRBorderChecked(false);
     setGrayScaled(properties.grayscaled);
     setPixel(properties.pixel);
-    setBlackChecked(properties.pixel === BLACK_PIXEL);
-    setBlueChecked(properties.pixel === BLUE_PIXEL);
-    setGreenChecked(properties.pixel === GREEN_PIXEL);
-    setPurpleChecked(properties.pixel === PURPLE_PIXEL);
-    setYellowChecked(properties.pixel === YELLOW_PIXEL);
-    setOrangeChecked(properties.pixel === ORANGE_PIXEL);
-    setRedChecked(properties.pixel === RED_PIXEL);
-    setWhiteChecked(properties.pixel === WHITE_PIXEL);
+
+    const checkPixel = (pixel, setter) => {
+      for (let i = 0; i < TYPE_COUNT; ++i) {
+        if (properties.pixel[TYPES[i]] !== pixel[TYPES[i]]) {
+          setter(false);
+          return;
+        }
+      }
+      setter(true);
+    }
+
+    checkPixel(BLACK_PIXEL, setBlackChecked);
+    checkPixel(WHITE_PIXEL, setWhiteChecked);
+    checkPixel(RED_PIXEL, setRedChecked);
+    checkPixel(BLUE_PIXEL, setBlueChecked);
+    checkPixel(YELLOW_PIXEL, setYellowChecked);
+    checkPixel(GREEN_PIXEL, setGreenChecked);
+    checkPixel(ORANGE_PIXEL, setOrangeChecked);
+    checkPixel(PURPLE_PIXEL, setPurpleChecked);
+
+    setCropChanged(checkAllCrop());
+    setDuplicateChanged(checkAllDuplicate());
+
+    setCheckersChanged(true);
+    setBrightnessChanged(true);
+    checkersSpacing.current.value = properties.checkersSpacing;
   }
 
   const reset = () => {
@@ -289,13 +312,13 @@ function App() {
     }
   }
 
-  const setColour = colour => {
-    if (colour.length < 3) {
+  const setColour = changeColour => {
+    if (changeColour.length < 3) {
       return;
     }
 
     let newPixel = BLACK_PIXEL;
-    switch (colour.substring(0, 3).toUpperCase()) {
+    switch (changeColour.substring(0, 3).toUpperCase()) {
       case 'BLA':
         newPixel = BLACK_PIXEL;
         break;
@@ -326,6 +349,8 @@ function App() {
     if (pixel === newPixel) {
       return;
     }
+
+    colour.current.style.backgroundColor = getColour(newPixel);
     setPixel(newPixel);
     if (checkersSpacing.current.value !== '') {
       setCheckersChanged(false);
@@ -333,7 +358,7 @@ function App() {
 
     const colours = ['BLA', 'BLU', 'RED', 'WHI', 'GRE', 'PUR', 'ORA', 'YEL'];
     const setters = [setBlackChecked, setBlueChecked, setRedChecked, setWhiteChecked, setGreenChecked, setPurpleChecked, setOrangeChecked, setYellowChecked];
-    const indexOfColour = colours.indexOf(colour);
+    const indexOfColour = colours.indexOf(changeColour);
     for (let i = 0; i < colours.length; ++i) {
       if (indexOfColour !== i) {
         setters[i](false);
@@ -346,7 +371,6 @@ function App() {
     <div id="app">
       <div id="header">
         <input className="input" type="file" ref={inputFile} onChange={() => {
-          console.log(this)
           const image = new Image();
 
           const reader = new FileReader();
@@ -365,7 +389,7 @@ function App() {
             setCanvasObj(new CanvasList(image, canvas.current));
           }, timeDuration);
         }} />
-        <button className={consistentUpdate ? "none" : "update"} onClick={() => {
+        <button className={consistentUpdate ? "none" : "update"} value="hudsa" onClick={() => {
           canvasObj.updateDisplay();
         }}>Update
         </button>
@@ -396,7 +420,9 @@ function App() {
               <div className="title">
                 Colour
               </div>
-              <input type="radio" checked={blackChecked} onChange={() => {
+              <div className="colour" ref={colour}>
+              </div>
+              <input type="radio" color="black" checked={blackChecked} onChange={() => {
                 setColour('BLA');
               }} />
               <input type="radio" checked={blueChecked} onChange={() => {
@@ -433,11 +459,10 @@ function App() {
                 const value = e.target.value;
                 e.target.value = makeInteger(value);
 
-                setBrightnessChanged(value === '' || parseInt(value) === brightnessLevel);
+                setBrightnessChanged(value === '' || value === '-' || parseInt(value) === brightnessLevel);
               }} />
               <button className={brightnessChanged ? "submit brightness inactive" : "submit brightness active"} onClick={() => {
                 changeBrightness();
-                setBrightnessChanged(brightnessLevel === canvasObj.recent.properties.brightnessLevel);
               }}>Confirm
               </button>
             </div>
@@ -555,7 +580,8 @@ function App() {
                 const value = e.target.value;
                 e.target.value = makeNaturalNumber(value);
 
-                setCheckersChanged(e.target.value === '');
+                // console.log(canvasObj.recent.properties.checkersSpacing)
+                setCheckersChanged(e.target.value === '' || parseInt(e.target.value) === canvasObj.recent.properties.checkersSpacing);
               }} />
               <button className={checkersChanged ? "submit checkers inactive" : "submit checkers active"} onClick={() => {
                 addCheckers();

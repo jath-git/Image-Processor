@@ -71,7 +71,7 @@
     }
 
     .active {
-      background-color: darkcyan;
+      background-color: darkblue;
       cursor: pointer;
     }
 
@@ -95,6 +95,12 @@
         width: 1vw;
         height: 1vw;
         cursor: pointer;
+      }
+
+      .colour {
+        width: 1vw;
+        height: 1vw;
+        background-color: black;
       }
     }
   }
