@@ -28,14 +28,14 @@
       cursor: pointer;
     }
 
-    #update {
-      background-color: #26abff;
-      right: 2vw;
-    }
-
-    #download {
+    .update {
       background-color: #8b0000;
       right: 21vw;
+    }
+
+    .download {
+      background-color: #26abff;
+      right: 2vw;
     }
   }
 
@@ -89,7 +89,7 @@
 
       .blur-add {
         width: 1vw;
-        height: 2.75vh;
+        height: 1vw;
         cursor: pointer;
       }
     }
@@ -112,4 +112,8 @@
   #inputImage {
     display: none;
   }
+}
+
+.none {
+  display: none;
 }

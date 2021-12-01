@@ -1,7 +1,7 @@
 import './App.scss';
 import CanvasList from './classes/CanvasList';
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { BLACK_PIXEL } from './Constants';
+import { BLACK_PIXEL, RED_PIXEL, WHITE_PIXEL, BLUE_PIXEL, GREEN_PIXEL, YELLOW_PIXEL, PURPLE_PIXEL, ORANGE_PIXEL } from './Constants';
 import { setPreviousInput, getValidNumber, makeInteger, makeWholeNumber, makeNaturalNumber } from './utilities/default';
 
 function App() {
@@ -25,7 +25,15 @@ function App() {
   let [lBorderChecked, setLBorderChecked] = useState(false);
   let [rBorderChecked, setRBorderChecked] = useState(false);
   let [grayScaled, setGrayScaled] = useState(false);
-
+  let [pixel, setPixel] = useState(BLACK_PIXEL);
+  let [blackChecked, setBlackChecked] = useState(true);
+  let [blueChecked, setBlueChecked] = useState(false);
+  let [purpleChecked, setPurpleChecked] = useState(false);
+  let [orangeChecked, setOrangeChecked] = useState(false);
+  let [yellowChecked, setYellowChecked] = useState(false);
+  let [greenChecked, setGreenChecked] = useState(false);
+  let [redChecked, setRedChecked] = useState(false);
+  let [whiteChecked, setWhiteChecked] = useState(false);
   let borderLength = useRef(null);
   let checkersSpacing = useRef(null);
   let canvas = useRef(null);
@@ -46,9 +54,6 @@ function App() {
 
   const image = useMemo(() => new Image(), []);
   image.src = 'assets/images/landscape.jpg';
-  // image.onload = () => {
-  //   imageLoaded.current = true;
-  // }
 
   useEffect(() => {
     if (!imageLoaded.current) {
@@ -61,15 +66,6 @@ function App() {
     }
   });
 
-  // useEffect(() => {
-  //   if (imageLoaded.current && image && canvas.current) {
-  //     canvas.current.width = parseInt(image.width);
-  //     canvas.current.height = parseInt(image.height);
-  //     setCanvasObj(new CanvasList(image, canvas.current));
-  //     imageLoaded.current = false;
-  //   }
-  // }, [image]);
-
   const updateAbilities = () => {
     if (consistentUpdate) {
       canvasObj.updateDisplay();
@@ -80,31 +76,41 @@ function App() {
 
   const updateElements = () => {
     updateAbilities();
-    brightness.current.value = canvasObj.recent.properties.brightnessLevel;
-    borderLength.current.value = canvasObj.recent.properties.borderLength;
-    checkersSpacing.current.value = canvasObj.recent.properties.checkersSpacing;
-    cropSplitX.current.value = canvasObj.recent.properties.cropped.splitX;
-    cropSplitY.current.value = canvasObj.recent.properties.cropped.splitY;
-    cropSectionX.current.value = canvasObj.recent.properties.cropped.sectionX;
-    cropSectionY.current.value = canvasObj.recent.properties.cropped.sectionY;
-    duplicateSplitX.current.value = canvasObj.recent.properties.duplicated.splitX;
-    duplicateSplitY.current.value = canvasObj.recent.properties.duplicated.splitY;
-    duplicateSectionX.current.value = canvasObj.recent.properties.duplicated.sectionX;
-    duplicateSectionY.current.value = canvasObj.recent.properties.duplicated.sectionY;
-    blurLevel.current.value = canvasObj.recent.properties.blurLevel;
-    tMirror.current.checked = canvasObj.recent.properties.mirror.T;
-    bMirror.current.checked = canvasObj.recent.properties.mirror.B;
-    lMirror.current.checked = canvasObj.recent.properties.mirror.L;
-    rMirror.current.checked = canvasObj.recent.properties.mirror.R;
+    const properties = canvasObj.recent.properties;
+    brightness.current.value = properties.brightnessLevel;
+    borderLength.current.value = properties.borderLength;
+    checkersSpacing.current.value = properties.checkersSpacing;
+    cropSplitX.current.value = properties.cropped.splitX;
+    cropSplitY.current.value = properties.cropped.splitY;
+    cropSectionX.current.value = properties.cropped.sectionX;
+    cropSectionY.current.value = properties.cropped.sectionY;
+    duplicateSplitX.current.value = properties.duplicated.splitX;
+    duplicateSplitY.current.value = properties.duplicated.splitY;
+    duplicateSectionX.current.value = properties.duplicated.sectionX;
+    duplicateSectionY.current.value = properties.duplicated.sectionY;
+    blurLevel.current.value = properties.blurLevel;
+    tMirror.current.checked = properties.mirror.T;
+    bMirror.current.checked = properties.mirror.B;
+    lMirror.current.checked = properties.mirror.L;
+    rMirror.current.checked = properties.mirror.R;
 
-    setInvertChecked(canvasObj.recent.properties.isInverted);
-    setHFlipChecked(canvasObj.recent.properties.isFlipped.horizontal);
-    setVFlipChecked(canvasObj.recent.properties.isFlipped.vertical);
-    setTBorderChecked(canvasObj.recent.properties.addedBorders.T);
-    setBBorderChecked(canvasObj.recent.properties.addedBorders.B);
-    setLBorderChecked(canvasObj.recent.properties.addedBorders.L);
-    setRBorderChecked(canvasObj.recent.properties.addedBorders.R);
-    setGrayScaled(canvasObj.recent.properties.grayscaled)
+    setInvertChecked(properties.isInverted);
+    setHFlipChecked(properties.isFlipped.horizontal);
+    setVFlipChecked(properties.isFlipped.vertical);
+    setTBorderChecked(false);
+    setBBorderChecked(false);
+    setLBorderChecked(false);
+    setRBorderChecked(false);
+    setGrayScaled(properties.grayscaled);
+    setPixel(properties.pixel);
+    setBlackChecked(properties.pixel === BLACK_PIXEL);
+    setBlueChecked(properties.pixel === BLUE_PIXEL);
+    setGreenChecked(properties.pixel === GREEN_PIXEL);
+    setPurpleChecked(properties.pixel === PURPLE_PIXEL);
+    setYellowChecked(properties.pixel === YELLOW_PIXEL);
+    setOrangeChecked(properties.pixel === ORANGE_PIXEL);
+    setRedChecked(properties.pixel === RED_PIXEL);
+    setWhiteChecked(properties.pixel === WHITE_PIXEL);
   }
 
   const reset = () => {
@@ -151,7 +157,7 @@ function App() {
     }
 
     if (number !== null) {
-      canvasObj.addBorders(number, BLACK_PIXEL, borders);
+      canvasObj.addBorders(number, pixel, borders);
       updateAbilities();
       setTrue(true);
     }
@@ -170,14 +176,14 @@ function App() {
   }
 
   const addCheckers = () => {
-    const value = checkersSpacing.current.value;
-    const number = getValidNumber(value, 1, Math.max(canvasObj.width, canvasObj.height));
-    if (value === '') {
+    if (checkersChanged) {
       return;
     }
+    const value = checkersSpacing.current.value;
+    const number = getValidNumber(value, 1, Math.max(canvasObj.width, canvasObj.height));
 
     if (number !== null) {
-      canvasObj.checkers(BLACK_PIXEL, number);
+      canvasObj.checkers(pixel, number);
       updateAbilities();
       setCheckersChanged(true);
     }
@@ -210,7 +216,8 @@ function App() {
     parsedInput.sectionX = getValidNumber(cropSectionX.current.value, 0, parsedInput.splitX - 1);
     parsedInput.sectionY = getValidNumber(cropSectionY.current.value, 0, parsedInput.splitY - 1);
 
-    return parsedInput.splitX === null || parsedInput.splitY === null || parsedInput.sectionX === null || parsedInput.sectionY === null;
+    return parsedInput.splitX === null || parsedInput.splitY === null || parsedInput.sectionX === null || parsedInput.sectionY === null ||
+      (parsedInput.splitX === canvasObj.recent.properties.cropped.splitX && parsedInput.splitY === canvasObj.recent.properties.cropped.splitY && parsedInput.sectionX === canvasObj.recent.properties.cropped.sectionX && parsedInput.sectionY === canvasObj.recent.properties.cropped.sectionY);
   }
 
   const duplicate = () => {
@@ -226,7 +233,7 @@ function App() {
     }
     canvasObj.duplicate(parsedInput.splitX, parsedInput.splitY, parsedInput.sectionX, parsedInput.sectionY);
     updateAbilities();
-    setCropChanged(true);
+    setDuplicateChanged(true);
   }
 
   const checkAllDuplicate = () => {
@@ -238,9 +245,10 @@ function App() {
     }
 
     parsedInput.sectionX = getValidNumber(duplicateSectionX.current.value, 0, parsedInput.splitX - 1);
-    parsedInput.sectionY = getValidNumber(duplicateSectionY.current.value, 0, parsedInput.splitY - 1);
+    parsedInput.sectionY = getValidNumber(duplicateSectionY.current.value, 0, parsedInput.splitY - 1)
 
-    return parsedInput.splitX === null || parsedInput.splitY === null || parsedInput.sectionX === null || parsedInput.sectionY === null;
+    return parsedInput.splitX === null || parsedInput.splitY === null || parsedInput.sectionX === null || parsedInput.sectionY === null ||
+      (parsedInput.splitX === canvasObj.recent.properties.duplicated.splitX && parsedInput.splitY === canvasObj.recent.properties.duplicated.splitY && parsedInput.sectionX === canvasObj.recent.properties.duplicated.sectionX && parsedInput.sectionY === canvasObj.recent.properties.duplicated.sectionY);
   }
 
   window.onkeydown = e => {
@@ -279,15 +287,70 @@ function App() {
     }
   }
 
+  const setColour = colour => {
+    if (colour.length < 3) {
+      return;
+    }
+
+    let newPixel = BLACK_PIXEL;
+    switch (colour.substring(0, 3).toUpperCase()) {
+      case 'BLA':
+        newPixel = BLACK_PIXEL;
+        break;
+      case 'BLU':
+        newPixel = BLUE_PIXEL;
+        break;
+      case 'RED':
+        newPixel = RED_PIXEL;
+        break;
+      case 'WHI':
+        newPixel = WHITE_PIXEL;
+        break;
+      case 'GRE':
+        newPixel = GREEN_PIXEL;
+        break;
+      case 'YEL':
+        newPixel = YELLOW_PIXEL;
+        break;
+      case 'ORA':
+        newPixel = ORANGE_PIXEL;
+        break;
+      case 'PUR':
+        newPixel = PURPLE_PIXEL;
+        break;
+      default:
+        return;
+    }
+    if (pixel === newPixel) {
+      return;
+    }
+    setPixel(newPixel);
+    if (checkersSpacing.current.value !== '') {
+      setCheckersChanged(false);
+    }
+
+    const colours = ['BLA', 'BLU', 'RED', 'WHI', 'GRE', 'PUR', 'ORA', 'YEL'];
+    const setters = [setBlackChecked, setBlueChecked, setRedChecked, setWhiteChecked, setGreenChecked, setPurpleChecked, setOrangeChecked, setYellowChecked];
+    const indexOfColour = colours.indexOf(colour);
+    for (let i = 0; i < colours.length; ++i) {
+      if (indexOfColour !== i) {
+        setters[i](false);
+      }
+    }
+    setters[indexOfColour](true);
+  }
+
   return (
     <div id="app">
       <div id="header">
-        <button id="download" onClick={() => {
-          download();
-        }}>Download</button>
-        <button id="update" onClick={() => {
+        <button className={consistentUpdate ? "none" : "update"} onClick={() => {
           canvasObj.updateDisplay();
-        }}>Update</button>
+        }}>Update
+        </button>
+        <button className="download" onClick={() => {
+          download();
+        }}>Download
+        </button>
       </div>
       <div id="menu">
         <button className={canReset ? 'reset active' : 'reset inactive'} onClick={() => {
@@ -307,6 +370,35 @@ function App() {
               }
               setConsistentUpdate(oppositeUpdate);
             }} />
+            <div className="option">
+              <div className="title">
+                Colour
+              </div>
+              <input type="radio" checked={blackChecked} onChange={() => {
+                setColour('BLA');
+              }} />
+              <input type="radio" checked={blueChecked} onChange={() => {
+                setColour('BLU');
+              }} />
+              <input type="radio" checked={redChecked} onChange={() => {
+                setColour('RED');
+              }} />
+              <input type="radio" checked={whiteChecked} onChange={() => {
+                setColour('WHI');
+              }} />
+              <input type="radio" checked={yellowChecked} onChange={() => {
+                setColour('YEL');
+              }} />
+              <input type="radio" checked={greenChecked} onChange={() => {
+                setColour('GRE');
+              }} />
+              <input type="radio" checked={purpleChecked} onChange={() => {
+                setColour('PUR');
+              }} />
+              <input type="radio" checked={orangeChecked} onChange={() => {
+                setColour('ORA');
+              }} />
+            </div>
             <div className="option">
               <div className="title">
                 Brightness

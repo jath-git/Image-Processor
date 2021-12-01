@@ -1,23 +1,15 @@
 import { WHITE_COLOUR, TYPES, TYPE_COUNT, WHITE_PIXEL } from '../Constants.js';
-import Canvas from './Canvas.js';
+import ModifiedCanvas from './ModifiedCanvas.js';
+import OriginalCanvas from './OriginalCanvas.js';
 
 export default class CanvasList {
-    width;
-    height;
-    context;
-    originalContext;
-    original;
-    recent;
-    canUndo;
-    canReset;
-
     constructor(inputImage, canvas) {
         this.width = inputImage.width;
         this.height = inputImage.height;
         this.context = canvas.getContext('2d');
         this.originalContext = canvas.getContext('2d');
         this.context.drawImage(inputImage, 0, 0);
-        this.original = new Canvas(this.context, this.width, this.height);
+        this.original = new OriginalCanvas(this.context, this.width, this.height);
         this.recent = this.original;
         this.canUndo = false;
         this.canReset = false;
@@ -29,7 +21,7 @@ export default class CanvasList {
     }
 
     makeNewRecent = reference => {
-        return new Canvas(this.context, this.width, this.height, reference);
+        return new ModifiedCanvas(this.context, this.width, this.height, reference);
     }
 
     setNewRecent = newRecent => {
@@ -43,7 +35,7 @@ export default class CanvasList {
         const pixelsLength = this.width * this.height;
         const newRecent = this.makeNewRecent(this.recent);
         newRecent.properties.grayscaled = true;
-        
+
         for (let i = 0; i < pixelsLength; ++i) {
             const gray = 0.299 * newRecent.pixels[i].red + 0.587 * newRecent.pixels[i].green + 0.114 * newRecent.pixels[i].blue;
             newRecent.pixels[i].red = gray;
@@ -59,6 +51,7 @@ export default class CanvasList {
         }
         const newRecent = this.makeNewRecent(this.recent);
         newRecent.properties.checkersSpace = skip;
+        newRecent.properties.pixel = pixel;
 
         for (let i = 0; i < this.height; i += skip) {
             for (let j = i % 2 || skip / 2 > this.width - 1 ? 0 : Math.floor(skip / 2); j < this.width; j += skip) {
@@ -344,10 +337,12 @@ export default class CanvasList {
             return;
         }
 
-        const newRecent = this.makeNewRecent(this.recent);
+        let newRecent = this.recent;
         if (external) {
+            newRecent = this.makeNewRecent(this.recent);
             newRecent.properties.addedBorders[direction] = true;
             newRecent.properties.borderLength = remaining;
+            newRecent.properties.pixel = pixel;
         }
 
         switch (simpleDirection) {
@@ -379,7 +374,10 @@ export default class CanvasList {
                     }
                 }
         }
-        this.setNewRecent(newRecent);
+
+        if (external) {
+            this.setNewRecent(newRecent);
+        }
     }
 
     mirror = direction => {
