@@ -1,10 +1,11 @@
 import { BLACK_PIXEL, WHITE_PIXEL, YELLOW_PIXEL, GREEN_PIXEL, BLUE_PIXEL, PURPLE_PIXEL, ORANGE_PIXEL, RED_PIXEL } from '../Constants';
+import pixel from '../interfaces/pixel';
 
-const setPreviousInput = e => {
+const setPreviousInput = (e: any): void => {
   e.preventDefault();
 }
 
-const getValidNumber = (str, min, max) => {
+const getValidNumber = (str: any, min: number, max: number): number | null => {
   if (str.length === 0 || str === "-" || (isNaN(str) && isNaN(str.subtring(1) && str.length > 1)) || (isNaN(str[0]) && str[0] !== "-")) {
     return null;
   }
@@ -17,7 +18,7 @@ const getValidNumber = (str, min, max) => {
 }
 
 
-const makeInteger = value => {
+const makeInteger = (value: string): string => {
   for (let i = 0; i < value.length; ++i) {
     if (!((value[i] >= '0' && value[i] <= '9') || value[i] === '-') || (value[i] === '-' && i !== 0) || (value[i] === '0' && value.length !== 1 && (i === 0 || (i === 1 && value[0] === '-')))) {
       return value.substring(0, i) + value.substring(i + 1);
@@ -27,7 +28,7 @@ const makeInteger = value => {
   return value;
 }
 
-const makeNaturalNumber = value => {
+const makeNaturalNumber = (value: string): string => {
   for (let i = 0; i < value.length; ++i) {
     if (!(value[i] >= '0' && value[i] <= '9') || (value[i] === '0' && i === 0)) {
       return value.substring(0, i) + value.substring(i + 1);
@@ -37,7 +38,7 @@ const makeNaturalNumber = value => {
   return value;
 }
 
-const makeWholeNumber = value => {
+const makeWholeNumber = (value: string): string => {
   for (let i = 0; i < value.length; ++i) {
     if (!(value[i] >= '0' && value[i] <= '9') || (value[i] === '0' && value.length !== 1 && i === 0)) {
       return value.substring(0, i) + value.substring(i + 1);
@@ -47,7 +48,7 @@ const makeWholeNumber = value => {
   return value;
 }
 
-const getColour = pixel => {
+const getColour = (pixel: pixel): string => {
   switch (pixel) {
     case BLACK_PIXEL:
       return 'black';
