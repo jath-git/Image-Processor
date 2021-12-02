@@ -331,7 +331,7 @@ export default class CanvasList {
         }
 
         if (remainingHeight !== 0) {
-            this.cleanBorders(remainingHeight, 'B', WHITE_PIXEL, this.recent);
+            // this.cleanBorders(remainingHeight, 'B', WHITE_PIXEL, this.recent);
         }
         this.setNewRecent(newRecent);
     }

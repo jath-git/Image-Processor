@@ -21,6 +21,7 @@
 
     .input,
     button {
+      position: absolute;
       background-color: #26abff;
       cursor: pointer;
       margin-top: 3.5vh;
@@ -43,7 +44,6 @@
   }
 
   button {
-    position: absolute;
     text-transform: uppercase;
     border-radius: 50px;
     color: white;
@@ -58,14 +58,11 @@
     height: 100vh;
     width: 20vw;
 
-    .submit {
-      cursor: pointer;
-    }
-
     .reset,
     .undo {
+      position: absolute;
       top: 2.5vh;
-      font-size: 1rem;
+      font-size: 1vw;
       padding: 1.5vh 1vw;
       width: 8vw;
     }
@@ -76,7 +73,7 @@
     }
 
     .inactive {
-      cursor:not-allowed;
+      cursor: not-allowed;
     }
 
     .reset {
@@ -90,6 +87,47 @@
     #options-container {
       width: 100%;
       margin-top: 11vh;
+      height: 85vh;
+      overflow-y: scroll;
+
+      .option {
+        margin-top: 1.5vh;
+        margin-left: 1vw;
+        font-size: 0.8vw;
+        width: fit-content;
+        // padding: 1%;
+
+        button {
+          float: right;
+        }
+
+        .colour,
+        .autoUpdate,
+        .invert,
+        .flip,
+        .grayscale {
+          float: left;
+        }
+
+        .blur {
+          cursor: not-allowed;
+        }
+
+        .checklist {
+          padding: 0.2% 0;
+          width: fit-content;
+          color: rgb(40, 41, 46);
+        }
+        
+        .right {
+          float: right;
+          margin-left: 0.4vw;
+        }
+
+        .text:not(.right) {
+          margin-left: 1.2vw;
+        }
+      }
 
       .blur-add {
         width: 1vw;

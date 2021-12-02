@@ -407,19 +407,73 @@ function App() {
         }>Undo</button>
         {canvasObj ?
           <div id="options-container">
-            <input type="checkbox" checked={consistentUpdate} onChange={() => {
-              const oppositeUpdate = !consistentUpdate;
-              if (oppositeUpdate) {
-                canvasObj.updateDisplay();
-              }
-              setConsistentUpdate(oppositeUpdate);
-            }} />
+            <div className="option">
+              <input className="autoUpdate" type="checkbox" checked={consistentUpdate} onChange={() => {
+                const oppositeUpdate = !consistentUpdate;
+                if (oppositeUpdate) {
+                  canvasObj.updateDisplay();
+                }
+                setConsistentUpdate(oppositeUpdate);
+              }} />
+              <div className="text">Automatic Updating</div>
+            </div>
             <div className="option">
               <div className="title">
-                Colour
+                Brightness
               </div>
-              <div className="colour" ref={colour}>
+              <input type="text" placeholder="Enter Value from -15 to 15" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={brightness} onKeyDown={e => {
+                if (e.code === 'Enter') {
+                  changeBrightness();
+                }
+              }} onChange={e => {
+                const value = e.target.value;
+                e.target.value = makeInteger(value);
+
+                setBrightnessChanged(value === '' || value === '-' || parseInt(value) === brightnessLevel);
+              }} />
+              <button className={brightnessChanged ? "submit brightness inactive" : "submit brightness active"} onClick={() => {
+                changeBrightness();
+              }}>Confirm
+              </button>
+            </div>
+            <div className="option">
+              <div className="title">
+                Blur
               </div>
+              <input className="blur" type="text" readOnly ref={blurLevel} defaultValue={1} />
+              <img className="blur-add" src="assets/images/add.png" alt="blur-add" onClick={() => {
+                const newBlurLevel = parseInt(blurLevel.current.value) + 1;
+                blurLevel.current.value = newBlurLevel;
+                canvasObj.blur(newBlurLevel, newBlurLevel);
+                updateAbilities();
+              }} />
+            </div>
+            <div className="option">
+              <input className="invert" type="checkbox" checked={invertChecked} onChange={() => {
+                canvasObj.invert();
+                updateAbilities();
+                setInvertChecked(!invertChecked);
+              }} />
+              <div className="text">
+                Invert
+              </div>
+            </div>
+            <div className="option">
+              <input className="grayscale" type="radio" checked={grayScaled} onChange={() => {
+                if (!grayScaled) {
+                  setGrayScaled(true);
+                  canvasObj.grayscale();
+                  updateAbilities();
+                }
+              }
+              } />
+              <div className="text">
+                Grayscale
+              </div>
+            </div>
+            <div className="option">
+              <div className="colour" ref={colour}></div>
+              <div className="text">Colour</div>
               <input type="radio" color="black" checked={blackChecked} onChange={() => {
                 setColour('BLA');
               }} />
@@ -447,62 +501,6 @@ function App() {
             </div>
             <div className="option">
               <div className="title">
-                Brightness
-              </div>
-              <input type="text" placeholder="Enter Value from -15 to 15" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={brightness} onKeyDown={e => {
-                if (e.code === 'Enter') {
-                  changeBrightness();
-                }
-              }} onChange={e => {
-                const value = e.target.value;
-                e.target.value = makeInteger(value);
-
-                setBrightnessChanged(value === '' || value === '-' || parseInt(value) === brightnessLevel);
-              }} />
-              <button className={brightnessChanged ? "submit brightness inactive" : "submit brightness active"} onClick={() => {
-                changeBrightness();
-              }}>Confirm
-              </button>
-            </div>
-            <div className="option">
-              <div className="title">
-                Blur
-              </div>
-              <input type="text" readOnly ref={blurLevel} defaultValue={1} />
-              <img className="blur-add" src="assets/images/add.png" alt="blur-add" onClick={() => {
-                const newBlurLevel = parseInt(blurLevel.current.value) + 1;
-                blurLevel.current.value = newBlurLevel;
-                canvasObj.blur(newBlurLevel, newBlurLevel);
-                updateAbilities();
-              }} />
-            </div>
-            <div className="option">
-              <div className="title">
-                Invert
-              </div>
-              <input type="checkbox" checked={invertChecked} onChange={() => {
-                canvasObj.invert();
-                updateAbilities();
-                setInvertChecked(!invertChecked);
-              }} />
-            </div>
-            <div className="option">
-              <div className="title">
-                Flip
-              </div>
-              <input type="checkbox" checked={hFlipChecked} onChange={() => {
-                canvasObj.flip('H');
-                updateAbilities();
-                setHFlipChecked(!hFlipChecked);
-              }} />
-              <input type="checkbox" checked={vFlipChecked} onChange={() => {
-                canvasObj.flip('V');
-                updateAbilities();
-                setVFlipChecked(!vFlipChecked);
-              }} />
-            </div>
-            <div className="option">
-              <div className="title">
                 Border
               </div>
               <input type="text" placeholder="Enter Thickness of Pixels" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={borderLength} onKeyDown={e => {
@@ -515,56 +513,42 @@ function App() {
 
                 setAllBorders(false);
               }} />
-              <input type="radio" checked={tBorderChecked} onChange={() => {
-                changeBorder(['T'], setTBorderChecked);
-              }
-              } />
-              <input type="radio" checked={bBorderChecked} onChange={() => {
-                changeBorder(['B'], setBBorderChecked);
-              }
-              } />
-              <input type="radio" checked={lBorderChecked} onChange={() => {
-                changeBorder(['L'], setLBorderChecked);
-              }
-              } />
-              <input type="radio" checked={rBorderChecked} onChange={() => {
-                changeBorder(['R'], setRBorderChecked);
-              }
-              } />
-            </div>
-            <div className="option">
-              <div className="title">
-                Mirror
-              </div>
-              <input type="radio" ref={tMirror} onChange={() => {
-                changeMirror('T');
-              }
-              } />
-              <input type="radio" ref={bMirror} onChange={() => {
-                changeMirror('B');
-              }
-              } />
-              <input type="radio" ref={lMirror} onChange={() => {
-                changeMirror('L');
-              }
-              } />
-              <input type="radio" ref={rMirror} onChange={() => {
-                changeMirror('R');
-              }
-              } />
-            </div>
-            <div className="option">
-              <div className="title">
-                Grayscale
-              </div>
-              <input type="radio" checked={grayScaled} onChange={() => {
-                if (!grayScaled) {
-                  setGrayScaled(true);
-                  canvasObj.grayscale();
-                  updateAbilities();
+              <div className="checklist">
+                <input type="radio" checked={tBorderChecked} onChange={() => {
+                  changeBorder(['T'], setTBorderChecked);
                 }
-              }
-              } />
+                } />
+                <div className="text right">
+                  Top
+                </div>
+              </div>
+              <div className="checklist">
+                <input type="radio" checked={bBorderChecked} onChange={() => {
+                  changeBorder(['B'], setBBorderChecked);
+                }
+                } />
+                <div className="text right">
+                  Bottom
+                </div>
+              </div>
+              <div className="checklist">
+                <input type="radio" checked={lBorderChecked} onChange={() => {
+                  changeBorder(['L'], setLBorderChecked);
+                }
+                } />
+                <div className="text right">
+                  Left
+                </div>
+              </div>
+              <div className="checklist">
+                <input type="radio" checked={rBorderChecked} onChange={() => {
+                  changeBorder(['R'], setRBorderChecked);
+                }
+                } />
+                <div className="text right">
+                  Right
+                </div>
+              </div>
             </div>
             <div className="option">
               <div className="title">
@@ -587,8 +571,75 @@ function App() {
             </div>
             <div className="option">
               <div className="title">
+                Flip
+              </div>
+              <div className="checklist">
+                <input className="flip" type="checkbox" checked={hFlipChecked} onChange={() => {
+                  canvasObj.flip('H');
+                  updateAbilities();
+                  setHFlipChecked(!hFlipChecked);
+                }} />
+                <div className="text">
+                  Horizontal
+                </div>
+              </div>
+              <div className="checklist">
+                <input className="flip" type="checkbox" checked={vFlipChecked} onChange={() => {
+                  canvasObj.flip('V');
+                  updateAbilities();
+                  setVFlipChecked(!vFlipChecked);
+                }} />
+                <div className="text">
+                  Vertical
+                </div>
+              </div>
+            </div>
+            <div className="option">
+              <div className="title">
+                Mirror
+              </div>
+              <div className="checklist">
+                <input type="radio" ref={tMirror} onChange={() => {
+                  changeMirror('T');
+                }
+                } />
+                <div className="text right">
+                  Top Half
+                </div>
+              </div>
+              <div className="checklist">
+                <input type="radio" ref={bMirror} onChange={() => {
+                  changeMirror('B');
+                }
+                } />
+                <div className="text right">
+                  Bottom Half
+                </div>
+              </div>
+              <div className="checklist">
+                <input type="radio" ref={lMirror} onChange={() => {
+                  changeMirror('L');
+                }
+                } />
+                <div className="text right">
+                  Left Half
+                </div>
+              </div>
+              <div className="checklist">
+                <input type="radio" ref={rMirror} onChange={() => {
+                  changeMirror('R');
+                }
+                } />
+                <div className="text right">
+                  Right Half
+                </div>
+              </div>
+            </div>
+            <div className="option">
+              <div className="title">
                 Crop
               </div>
+              <div className="checklist">
               <input type="text" placeholder="Enter Horizontal Split" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={cropSplitX} onKeyDown={e => {
                 if (e.code === 'Enter') {
                   crop();
@@ -599,6 +650,8 @@ function App() {
 
                 setCropChanged(checkAllCrop);
               }} />
+              </div>
+              <div className="checklist">
               <input type="text" placeholder="Enter Vertical Split" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={cropSplitY} onKeyDown={e => {
                 if (e.code === 'Enter') {
                   crop();
@@ -609,27 +662,32 @@ function App() {
 
                 setCropChanged(checkAllCrop);
               }} />
-              <input type="text" placeholder="Enter Horizontal Index" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={cropSectionX} onKeyDown={e => {
-                if (e.code === 'Enter') {
-                  crop();
-                }
-              }} onChange={e => {
-                const value = e.target.value;
-                e.target.value = makeWholeNumber(value);
+              </div>
+              <div className="checklist">
+                <input className="fit" type="text" placeholder="Enter Horizontal Index" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={cropSectionX} onKeyDown={e => {
+                  if (e.code === 'Enter') {
+                    crop();
+                  }
+                }} onChange={e => {
+                  const value = e.target.value;
+                  e.target.value = makeWholeNumber(value);
 
-                setCropChanged(checkAllCrop);
-              }} />
-              <input type="text" placeholder="Enter Vertical Section" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={cropSectionY} onKeyDown={e => {
-                if (e.code === 'Enter') {
-                  crop();
-                }
-              }} onChange={e => {
-                const value = e.target.value;
-                e.target.value = makeWholeNumber(value);
+                  setCropChanged(checkAllCrop);
+                }} />
+              </div>
+              <div className="checklist">
+                <input className="fit" type="text" placeholder="Enter Vertical Section" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={cropSectionY} onKeyDown={e => {
+                  if (e.code === 'Enter') {
+                    crop();
+                  }
+                }} onChange={e => {
+                  const value = e.target.value;
+                  e.target.value = makeWholeNumber(value);
 
-                setCropChanged(checkAllCrop);
-              }} />
-              <button className={cropChanged ? "submit crop inactive" : "submit crop active"} onClick={() => {
+                  setCropChanged(checkAllCrop);
+                }} />
+              </div>
+              <button className={cropChanged ? "submit inactive" : "submit active"} onClick={() => {
                 crop();
               }}>Confirm
               </button>
@@ -638,6 +696,7 @@ function App() {
               <div className="title">
                 Duplicate
               </div>
+              <div className="checklist">
               <input type="text" placeholder="Enter Horizontal Split" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={duplicateSplitX} onKeyDown={e => {
                 if (e.code === 'Enter') {
                   duplicate();
@@ -648,6 +707,8 @@ function App() {
 
                 setDuplicateChanged(checkAllDuplicate);
               }} />
+              </div>
+              <div className="checklist">
               <input type="text" placeholder="Enter Vertical Split" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={duplicateSplitY} onKeyDown={e => {
                 if (e.code === 'Enter') {
                   duplicate();
@@ -658,6 +719,8 @@ function App() {
 
                 setDuplicateChanged(checkAllDuplicate);
               }} />
+              </div>
+              <div className="checklist">
               <input type="text" placeholder="Enter Horizontal Section" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={duplicateSectionX} onKeyDown={e => {
                 if (e.code === 'Enter') {
                   duplicate();
@@ -668,6 +731,8 @@ function App() {
 
                 setDuplicateChanged(checkAllDuplicate);
               }} />
+              </div>
+              <div className="checklist">
               <input type="text" placeholder="Enter Vertical Section" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={duplicateSectionY} onKeyDown={e => {
                 if (e.code === 'Enter') {
                   duplicate();
@@ -678,8 +743,9 @@ function App() {
 
                 setDuplicateChanged(checkAllDuplicate);
               }} />
-              <button className={duplicateChanged ? "submit crop inactive" : "submit crop active"} onClick={() => {
-                crop();
+              </div>
+              <button className={duplicateChanged ? "submit inactive" : "submit active"} onClick={() => {
+                duplicate();
               }}>Confirm
               </button>
             </div>
