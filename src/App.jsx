@@ -36,8 +36,8 @@ function App({ modifiers, observables, accumulators, updateAbilities, updateElem
   }
 
   const download = (link) => {
-    const element = document.createElement('element');
-    element.href = canvas.current.toDataURL()
+    const element = document.createElement('a');
+    element.href = canvas.current.toDataURL();
     element.download = link ? link : 'processed.jpg';
     element.click();
   }
@@ -102,7 +102,7 @@ function App({ modifiers, observables, accumulators, updateAbilities, updateElem
           canvasObj.updateDisplay();
         }}>Update
         </button>
-        <button className="download" onClick={() => {
+        <button className={canvasObj !== null ? 'download' : 'inactive'} onClick={() => {
           download();
         }}>Download
         </button>
