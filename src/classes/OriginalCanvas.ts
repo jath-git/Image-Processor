@@ -1,4 +1,4 @@
-import { BLACK_COLOUR, WHITE_COLOUR, TYPES, TYPE_COUNT } from '../Constants';
+import { BLACK_COLOUR, WHITE_COLOUR, TYPES, TYPE_COUNT } from '../constants/Constants';
 import Canvas from './Canvas';
 import pixel from '../interfaces/pixel';
 

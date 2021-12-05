@@ -1,4 +1,4 @@
-import { WHITE_COLOUR } from '../Constants';
+import { WHITE_COLOUR } from '../constants/Constants';
 import properties from '../interfaces/properties';
 import pixel from '../interfaces/pixel';
 import Canvas from './Canvas';

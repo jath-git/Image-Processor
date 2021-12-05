@@ -1,4 +1,4 @@
-import { BLACK_COLOUR, WHITE_COLOUR, TYPES, TYPE_COUNT, BLACK_PIXEL } from '../Constants';
+import { BLACK_COLOUR, WHITE_COLOUR, TYPES, TYPE_COUNT, BLACK_PIXEL } from '../constants/Constants';
 import pixel from '../interfaces/pixel';
 import properties from '../interfaces/properties';
 
@@ -10,13 +10,13 @@ export default class Canvas {
 
     constructor(_context: CanvasRenderingContext2D | null, _width: number, _height: number) {
         this.properties = {
-            brightnessLevel: '',
+            brightnessLevel: 0,
             blurLevel: 1,
-            checkersSpacing: '',
+            checkersSpacing: 0,
             isInverted: false,
             isFlipped: {
-                horizontal: false,
-                vertical: false
+                H: false,
+                V: false
             },
             addedBorders: {
                 T: false,
@@ -30,18 +30,18 @@ export default class Canvas {
                 L: false,
                 R: false
             },
-            borderLength: '',
+            borderLength: 0,
             cropped: {
-                splitX: '',
-                splitY: '',
-                sectionX: '',
-                sectionY: ''
+                splitX: 1,
+                splitY: 1,
+                sectionX: 0,
+                sectionY: 0
             },
             duplicated: {
-                splitX: '',
-                splitY: '',
-                sectionX: '',
-                sectionY: ''
+                splitX: 1,
+                splitY: 1,
+                sectionX: 0,
+                sectionY: 0
             },
             grayscaled: false,
             pixel: BLACK_PIXEL

@@ -1,4 +1,4 @@
-import { WHITE_COLOUR, TYPES, TYPE_COUNT, WHITE_PIXEL } from '../Constants';
+import { WHITE_COLOUR, TYPES, TYPE_COUNT, WHITE_PIXEL } from '../constants/Constants';
 import pixel from '../interfaces/pixel';
 import ModifiedCanvas from './ModifiedCanvas';
 import OriginalCanvas from './OriginalCanvas';
@@ -121,7 +121,7 @@ export default class CanvasList {
     }
 
     brightness = (newBrightnessLevel: number): void => {
-        const currentLevel = this.recent.properties.brightnessLevel === '' ? 0 : this.recent.properties.brightnessLevel;
+        const currentLevel = this.recent.properties.brightnessLevel;
         const level: number = newBrightnessLevel - currentLevel;
         if (level > 0) {
             this.contrast(20, level, newBrightnessLevel);
@@ -182,7 +182,7 @@ export default class CanvasList {
             return;
         }
         if (simpleDirection === 'H' || simpleDirection === 'X') {
-            newRecent.properties.isFlipped.horizontal = !newRecent.properties.isFlipped.horizontal;
+            newRecent.properties.isFlipped.H = !newRecent.properties.isFlipped.H;
             for (let i = 0; i < Math.floor(this.width / 2); ++i) {
                 for (let j = 0; j < this.height; ++j) {
                     const tempPixel: pixel = newRecent.pixels[j * this.width + i];
@@ -191,7 +191,7 @@ export default class CanvasList {
                 }
             }
         } else {
-            newRecent.properties.isFlipped.vertical = !newRecent.properties.isFlipped.vertical;
+            newRecent.properties.isFlipped.V = !newRecent.properties.isFlipped.V;
             for (let i = 0; i < Math.floor(this.height / 2); ++i) {
                 for (let j = 0; j < this.width; ++j) {
                     const tempPixel: pixel = newRecent.pixels[i * this.width + j];

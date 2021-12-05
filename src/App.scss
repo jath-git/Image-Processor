@@ -10,7 +10,6 @@
     height: 15vh;
 
     .input {
-      font-size: 1vw;
       border-radius: 50px;
       margin-left: 2vw;
       height: 5vh;
@@ -30,7 +29,6 @@
 
     button {
       width: 18vw;
-      font-size: 1.65vw;
       height: 8vh;
     }
 
@@ -62,7 +60,6 @@
     .undo {
       position: absolute;
       top: 2.5vh;
-      font-size: 1vw;
       padding: 1.5vh 1vw;
       width: 8vw;
     }
@@ -85,20 +82,19 @@
     }
 
     #options-container {
-      width: 100%;
-      margin-top: 11vh;
       height: 85vh;
-      overflow-y: scroll;
+      overflow: scroll;
+      // width: max-content;
+      margin-top: 8vh;
+      margin-left: 2vw;
 
       .option {
         margin-top: 1.5vh;
-        margin-left: 1vw;
-        font-size: 0.8vw;
-        width: fit-content;
-        // padding: 1%;
+        width: max-content;
+        font-size: medium;
 
         button {
-          float: right;
+          display: block;
         }
 
         .colour,
@@ -118,10 +114,20 @@
           width: fit-content;
           color: rgb(40, 41, 46);
         }
-        
+
         .right {
           float: right;
           margin-left: 0.4vw;
+        }
+
+        .checklist {
+          *:not(.text, .fit) {
+            cursor: pointer;
+          }
+
+          .text {
+            cursor: default;
+          }
         }
 
         .text:not(.right) {
@@ -153,7 +159,6 @@
 
     &::-webkit-scrollbar {
       display: none;
-      visibility: hidden;
     }
   }
 

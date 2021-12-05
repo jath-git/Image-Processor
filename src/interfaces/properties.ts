@@ -1,20 +1,21 @@
 import pixel from './pixel'
 
 export default interface properties {
-    brightnessLevel: number | '',
+    brightnessLevel: number,
     blurLevel: number,
-    checkersSpacing: number | '',
+    checkersSpacing: number,
     isInverted: boolean,
     isFlipped: {
-        horizontal: boolean,
-        vertical: boolean
+        [key: string]: boolean,
+        // H: boolean,
+        // V: boolean
     },
     addedBorders: {
         [key: string]: boolean,
-        // 'T': boolean,
-        // 'B': boolean,
-        // 'L': boolean,
-        // 'R': boolean
+        // T: boolean,
+        // B: boolean,
+        // L: boolean,
+        // R: boolean
     },
     mirror: {
         [key: string]: boolean,
@@ -23,18 +24,20 @@ export default interface properties {
         // L: boolean,
         // R: boolean
     },
-    borderLength: number | '',
+    borderLength: number,
     cropped: {
-        splitX: number | '',
-        splitY: number | '',
-        sectionX: number | '',
-        sectionY: number | ''
+        [key: string]: number,
+        // splitX: number,
+        // splitY: number,
+        // sectionX: number,
+        // sectionY: number
     },
     duplicated: {
-        splitX: number | '',
-        splitY: number | '',
-        sectionX: number | '',
-        sectionY: number | ''
+        [key: string]: number,
+        // splitX: number,
+        // splitY: number,
+        // sectionX: number,
+        // sectionY: number
     },
     grayscaled: boolean,
     pixel: pixel
