@@ -5,7 +5,6 @@ export default function Crop({ canvasObj, cropRef, updateAbilities, setCropChang
     const changeCrop = () => {
         if (!cropChanged && changeSections(canvasObj, 'crop', cropRef)) {
             updateAbilities();
-            setCropChanged(true);
         }
     }
 

@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Grayscale({ grayRef, canvasObj, updateAbilities }) {
     const changeGrayscale = () => {
-        if (!grayRef.current.checked) {
+        if (grayRef.current.checked) {
             canvasObj.grayscale();
             grayRef.current.checked = true;
             updateAbilities();

@@ -133,7 +133,7 @@ const checkAllSections = (canvasObj: CanvasList, observable: any, property: stri
   parsedInput.sectionY = getValidNumber(observable.sectionY.current.value, 0, parsedInput.splitY - 1);
 
   return (property !== 'cropped' && property !== 'duplicated') || parsedInput.splitX === null || parsedInput.splitY === null || parsedInput.sectionX === null || parsedInput.sectionY === null ||
-    (parsedInput.splitX === canvasObj.recent.properties[property].splitX && parsedInput.splitY === canvasObj.recent.properties[property].splitY && parsedInput.sectionX === canvasObj.recent.properties[property].sectionX && parsedInput.sectionY === canvasObj.recent.properties[property].sectionY);
+    (parsedInput.splitX === 1 && parsedInput.splitY === 1 && parsedInput.sectionX === 0 && parsedInput.sectionY === 0);
 }
 
 const changeSections = (canvasObj: CanvasList, functionName: string, observable: any): boolean => {
