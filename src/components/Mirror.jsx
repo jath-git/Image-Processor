@@ -1,8 +1,12 @@
 import React from 'react';
+import { getOppositeDirection } from '../utilities/default';
 
 export default function Mirror({ canvasObj, updateAbilities, mirrorRef }) {
     const changeMirror = (value) => {
         canvasObj.mirror(value);
+        const oppositeValue = getOppositeDirection(value);
+        canvasObj.recent.properties.mirror[oppositeValue] = true;
+        mirrorRef[oppositeValue].current.checked = true;
         updateAbilities();
     }
     return (

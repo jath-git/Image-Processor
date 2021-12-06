@@ -5,6 +5,7 @@ export default function Duplicate({ canvasObj, duplicateRef, setDuplicateChanged
     const changeDuplicate = () => {
         if (!duplicateChanged && changeSections(canvasObj, 'duplicate', duplicateRef)) {
             updateAbilities();
+            setDuplicateChanged(true);
         }
     }
 

@@ -132,8 +132,12 @@ const checkAllSections = (canvasObj: CanvasList, observable: any, property: stri
   parsedInput.sectionX = getValidNumber(observable.sectionX.current.value, 0, parsedInput.splitX - 1);
   parsedInput.sectionY = getValidNumber(observable.sectionY.current.value, 0, parsedInput.splitY - 1);
 
-  return (property !== 'cropped' && property !== 'duplicated') || parsedInput.splitX === null || parsedInput.splitY === null || parsedInput.sectionX === null || parsedInput.sectionY === null ||
-    (parsedInput.splitX === 1 && parsedInput.splitY === 1 && parsedInput.sectionX === 0 && parsedInput.sectionY === 0);
+  if (parsedInput.splitX === null || parsedInput.splitY === null || parsedInput.sectionX === null || parsedInput.sectionY === null ||
+    (parsedInput.splitX === 1 && parsedInput.splitY === 1 && parsedInput.sectionX === 0 && parsedInput.sectionY === 0)) {
+    return true;
+  }
+
+  return property === 'duplicated' && parsedInput.splitX === canvasObj.recent.properties.duplicated.splitX && parsedInput.splitY === canvasObj.recent.properties.duplicated.splitY && parsedInput.sectionX === canvasObj.recent.properties.duplicated.sectionX && parsedInput.sectionY === canvasObj.recent.properties.duplicated.sectionY;
 }
 
 const changeSections = (canvasObj: CanvasList, functionName: string, observable: any): boolean => {
@@ -152,4 +156,19 @@ const changeSections = (canvasObj: CanvasList, functionName: string, observable:
   return true;
 }
 
-export { setPreviousInput, getValidNumber, makeInteger, makeWholeNumber, makeNaturalNumber, parsePixelToColour, parseColourToPixel, compareColours, setAllBorders, checkAllSections, changeSections };
+const getOppositeDirection = (direction: string): string => {
+  switch (direction) {
+    case 'T':
+      return 'B';
+    case 'B':
+      return 'T';
+    case 'L':
+      return 'R';
+    case 'R':
+      return 'L';
+    default:
+      return '';
+  }
+}
+
+export { setPreviousInput, getValidNumber, makeInteger, makeWholeNumber, makeNaturalNumber, parsePixelToColour, parseColourToPixel, compareColours, setAllBorders, checkAllSections, changeSections, getOppositeDirection };

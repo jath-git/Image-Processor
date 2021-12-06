@@ -108,12 +108,18 @@ export default function Initial() {
         }
     }
 
-    const updateAbilities = () => {
+    const updateAbilities = (changedBorder) => {
         if (consistentUpdate) {
             canvasObj.updateDisplay();
         }
         setCanUndo(canvasObj.canUndo);
         setCanReset(canvasObj.canReset);
+
+        if (!changedBorder) {
+            for (let i = 0; i < DIRECTIONS_LIST.length; ++i) {
+                observables.borderRef[DIRECTIONS_LIST[i]].current.checked = false;
+            }
+        }
     }
 
     const updateElements = () => {
@@ -130,9 +136,24 @@ export default function Initial() {
                 observables.duplicateRef[SECTIONS_LIST[i]].current.value = '';
             }
         } else {
-            for (let i = 0; i < SECTIONS_LIST.length; ++i) {
-                observables.cropRef[SECTIONS_LIST[i]].current.value = properties.cropped[SECTIONS_LIST[i]];
-                observables.duplicateRef[SECTIONS_LIST[i]].current.value = properties.duplicated[SECTIONS_LIST[i]];
+            if (properties.cropped.splitX === 1 && properties.cropped.splitY === 1 && properties.cropped.sectionX === 0 && properties.cropped.sectionY === 0) {
+                for (let i = 0; i < SECTIONS_LIST.length; ++i) {
+                    observables.cropRef[SECTIONS_LIST[i]].current.value = '';
+                }
+            } else {
+                for (let i = 0; i < SECTIONS_LIST.length; ++i) {
+                    observables.cropRef[SECTIONS_LIST[i]].current.value = properties.cropped[SECTIONS_LIST[i]];
+                }
+            }
+
+            if (properties.duplicated.splitX === 1 && properties.duplicated.splitY === 1 && properties.duplicated.sectionX === 0 && properties.duplicated.sectionY === 0) {
+                for (let i = 0; i < SECTIONS_LIST.length; ++i) {
+                    observables.duplicateRef[SECTIONS_LIST[i]].current.value = '';
+                }
+            } else {
+                for (let i = 0; i < SECTIONS_LIST.length; ++i) {
+                    observables.duplicateRef[SECTIONS_LIST[i]].current.value = properties.duplicated[SECTIONS_LIST[i]];
+                }
             }
         }
 

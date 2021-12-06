@@ -1,8 +1,7 @@
-import React from 'react';
 import { COLOURS_LIST, DIRECTIONS_LIST } from '../constants/Constants';
 import { parseColourToPixel, parsePixelToColour } from '../utilities/default';
 
-export default function Colour({ colour, colourRef, setCheckersChanged, pixel, borderRef, checkersRef, setPixel }) {
+export default function Colour({ colour, colourRef, setCheckersChanged, pixel, checkersRef, setPixel }) {
     const changePixel = colourIndex => {
         const newColour = COLOURS_LIST[colourIndex];
         const newPixel = parseColourToPixel(newColour);
@@ -21,10 +20,6 @@ export default function Colour({ colour, colourRef, setCheckersChanged, pixel, b
 
             if (checkersRef.current.value !== '') {
                 setCheckersChanged(false);
-            }
-
-            for (let i = 0; i < DIRECTIONS_LIST.length; ++i) {
-                borderRef[DIRECTIONS_LIST[i]].current.checked = false;
             }
         }
     }

@@ -9,7 +9,7 @@ export default function Border({ canvasObj, pixel, borderRef, updateAbilities, b
             borders === 'A' ?
                 setAllBorders(borderRef, true) :
                 borderRef[borders].current.checked = true;
-            updateAbilities();
+            updateAbilities(true);
         } else {
             borderRef[borders].current.checked = false;
         }

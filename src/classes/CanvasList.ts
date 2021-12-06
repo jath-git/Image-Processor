@@ -2,7 +2,7 @@ import { WHITE_COLOUR, TYPES, TYPE_COUNT, WHITE_PIXEL } from '../constants/Const
 import pixel from '../interfaces/pixel';
 import ModifiedCanvas from './ModifiedCanvas';
 import OriginalCanvas from './OriginalCanvas';
-import Canvas from './Canvas'
+import Canvas from './Canvas';
 
 export default class CanvasList {
     width: number;
@@ -431,6 +431,7 @@ export default class CanvasList {
             return;
         }
         newRecent.properties.mirror[direction] = true;
+
         switch (simpleDirection) {
             case 'T':
                 for (let i = 0; i < Math.floor(this.height / 2); ++i) {
