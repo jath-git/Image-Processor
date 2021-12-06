@@ -1,4 +1,4 @@
-import { COLOURS_LIST, DIRECTIONS_LIST } from '../constants/Constants';
+import { COLOURS_LIST } from '../constants/Constants';
 import { parseColourToPixel, parsePixelToColour } from '../utilities/default';
 
 export default function Colour({ colour, colourRef, setCheckersChanged, pixel, checkersRef, setPixel }) {
