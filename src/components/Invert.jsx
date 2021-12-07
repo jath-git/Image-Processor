@@ -1,9 +1,12 @@
-import React from 'react';
-
-export default function Invert({ canvasObj, invertRef, updateAbilities }) {
+export default function Invert({ canvasObj, invertRef, brightnessRef, updateAbilities }) {
     const changeInvert = () => {
         canvasObj.invert();
         updateAbilities();
+
+        if (canvasObj.recent.properties.brightnessLevel !== 0) {
+            canvasObj.recent.properties.brightnessLevel *= -1;
+            brightnessRef.current.value = canvasObj.recent.properties.brightnessLevel;
+        }
     }
 
     return (

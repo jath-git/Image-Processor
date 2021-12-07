@@ -132,7 +132,7 @@ function App({ modifiers, observables, accumulators, updateAbilities, updateElem
             </div>
             <Brightness canvasObj={canvasObj} brightnessChanged={modifiers.brightness.get} brightnessRef={observables.brightnessRef} updateAbilities={updateAbilities} setBrightnessChanged={modifiers.brightness.set} />
             <Blur blurRef={observables.blurRef} canvasObj={canvasObj} updateAbilities={updateAbilities} />
-            <Invert canvasObj={canvasObj} invertRef={observables.invertRef} updateAbilities={updateAbilities} />
+            <Invert canvasObj={canvasObj} invertRef={observables.invertRef} brightnessRef={observables.brightnessRef} updateAbilities={updateAbilities} />
             <Grayscale grayRef={observables.grayRef} canvasObj={canvasObj} updateAbilities={updateAbilities} />
             <Colour colour={observables.colour} colourRef={observables.colourRef} setCheckersChanged={modifiers.checkers.set} pixel={pixel} borderRef={observables.borderRef} checkersRef={observables.checkersRef} setPixel={setPixel} />
             <Border canvasObj={canvasObj} pixel={pixel} borderRef={observables.borderRef} updateAbilities={updateAbilities} borderLength={observables.borderRef.borderLength} />
