@@ -3,9 +3,11 @@ import CanvasList from './classes/CanvasList';
 import { useEffect, useMemo } from 'react';
 import { TIME_DURATION } from './constants/Constants';
 import { Blur, Brightness, Invert, Grayscale, Border, Checkers, Flip, Mirror, Crop, Duplicate, Colour } from './components';
+import { useRef } from 'react'
 
 function App({ modifiers, observables, accumulators, updateAbilities, updateElements }) {
   const { canvas, imageLoaded, canvasObj, setCanvasObj, canUndo, setCanUndo, canReset, consistentUpdate, setConsistentUpdate, pixel, setPixel } = accumulators;
+  let inputFile = useRef(null);
 
   const image = useMemo(() => new Image(), []);
   image.src = 'assets/images/landscape.jpg';
@@ -58,6 +60,8 @@ function App({ modifiers, observables, accumulators, updateAbilities, updateElem
           download();
         } else if (keyPressed === 'u') {
           canvasObj.updateDisplay();
+        } else if (keyPressed === 'i') {
+          inputFile.current.click();
         }
       }
     }
@@ -79,7 +83,7 @@ function App({ modifiers, observables, accumulators, updateAbilities, updateElem
   return (
     <div id="app">
       <div id="header">
-        <input className="input" type="file" onChange={e => {
+        <input className="input" ref={inputFile} type="file" onChange={e => {
           const image = new Image();
 
           const reader = new FileReader();
@@ -100,22 +104,22 @@ function App({ modifiers, observables, accumulators, updateAbilities, updateElem
         }} />
         <button className={consistentUpdate ? "none" : "update"} onClick={() => {
           canvasObj.updateDisplay();
-        }}>Update
+        }}>Update (Ctrl + U)
         </button>
         <button className={canvasObj !== null ? 'download' : 'inactive'} onClick={() => {
           download();
-        }}>Download
+        }}>Download (Ctrl + D)
         </button>
       </div>
       <div id="menu">
         <button className={canReset ? 'reset active' : 'reset inactive'} onClick={() => {
           reset();
         }
-        }>Reset</button>
+        }>Reset (Ctrl + B)</button>
         <button className={canUndo ? 'undo active' : 'undo inactive'} onClick={() => {
           undo();
         }
-        }>Undo</button>
+        }>Undo (Ctrl + Z)</button>
         {canvasObj ?
           <div id="options-container">
             <div className="option">
