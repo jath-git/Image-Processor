@@ -3,11 +3,9 @@ import CanvasList from './classes/CanvasList';
 import { useEffect, useMemo } from 'react';
 import { TIME_DURATION } from './constants/Constants';
 import { Blur, Brightness, Invert, Grayscale, Border, Checkers, Flip, Mirror, Crop, Duplicate, Colour } from './components';
-import { useRef } from 'react'
 
 function App({ modifiers, observables, accumulators, updateAbilities, updateElements }) {
-  const { canvas, imageLoaded, canvasObj, setCanvasObj, canUndo, setCanUndo, canReset, consistentUpdate, setConsistentUpdate, pixel, setPixel } = accumulators;
-  let inputFile = useRef(null);
+  const { canvas, imageLoaded, canvasObj, setCanvasObj, canUndo, setCanUndo, canReset, consistentUpdate, setConsistentUpdate, pixel, setPixel, inputFile } = accumulators;
 
   const image = useMemo(() => new Image(), []);
   image.src = 'assets/images/landscape.jpg';

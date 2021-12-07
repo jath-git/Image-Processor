@@ -29,28 +29,28 @@ export default function Colour({ colour, colourRef, setCheckersChanged, pixel, c
             <div className="option">
                 <div className="colour" ref={colour}></div>
                 <div className="text">Colour</div>
-                <input type="radio" defaultChecked={true} ref={colourRef.black} onChange={() => {
+                <input className="pointer" type="radio" defaultChecked={true} ref={colourRef.black} onChange={() => {
                     changePixel(0);
                 }} />
-                <input type="radio" ref={colourRef.blue} onChange={() => {
+                <input className="pointer" type="radio" ref={colourRef.blue} onChange={() => {
                     changePixel(1);
                 }} />
-                <input type="radio" ref={colourRef.red} onChange={() => {
+                <input className="pointer" type="radio" ref={colourRef.red} onChange={() => {
                     changePixel(2);
                 }} />
-                <input type="radio" ref={colourRef.white} onChange={() => {
+                <input className="pointer" type="radio" ref={colourRef.white} onChange={() => {
                     changePixel(3);
                 }} />
-                <input type="radio" ref={colourRef.green} onChange={() => {
+                <input className="pointer" type="radio" ref={colourRef.green} onChange={() => {
                     changePixel(4);
                 }} />
-                <input type="radio" ref={colourRef.purple} onChange={() => {
+                <input className="pointer" type="radio" ref={colourRef.purple} onChange={() => {
                     changePixel(5);
                 }} />
-                <input type="radio" ref={colourRef.orange} onChange={() => {
+                <input className="pointer" type="radio" ref={colourRef.orange} onChange={() => {
                     changePixel(6);
                 }} />
-                <input type="radio" ref={colourRef.yellow} onChange={() => {
+                <input className="pointer" type="radio" ref={colourRef.yellow} onChange={() => {
                     changePixel(7);
                 }} />
             </div>

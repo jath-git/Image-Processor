@@ -13,6 +13,7 @@ export default function Initial() {
     let accumulators = {
         canvas: useRef(null),
         imageLoaded: useRef(false),
+        inputFile: useRef(null),
         canvasObj,
         setCanvasObj,
         canUndo,

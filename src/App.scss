@@ -97,6 +97,10 @@
         width: max-content;
         font-size: medium;
 
+        .pointer {
+          cursor: pointer;
+        }
+
         button {
           display: block;
         }
