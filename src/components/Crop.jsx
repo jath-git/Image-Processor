@@ -39,7 +39,7 @@ export default function Crop({ canvasObj, cropRef, updateAbilities, setCropChang
                     }} />
                 </div>
                 <div className="checklist">
-                    <input className="fit" type="text" placeholder="Enter Horizontal Index" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={cropRef.sectionX} onKeyDown={e => {
+                    <input className="fit" type="text" placeholder="Enter Horizontal Section" onPaste={setPreviousInput} onDrop={setPreviousInput} ref={cropRef.sectionX} onKeyDown={e => {
                         if (e.code === 'Enter') {
                             changeCrop();
                         }
